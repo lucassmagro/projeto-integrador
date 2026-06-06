@@ -2,7 +2,7 @@ import banco from "../Banco.js";
 import { DataTypes } from "sequelize";
 
 const RetificacaoRegistro = banco.define(
-  "retificacao",
+  "retificacao_registro",
   {
     id: {
       type: DataTypes.BIGINT,
@@ -10,23 +10,27 @@ const RetificacaoRegistro = banco.define(
       primaryKey: true,
       autoIncrement: true,
     },
-    registro_original_id: {
+    registro_clinico_id: {
       type: DataTypes.BIGINT,
       allowNull: false,
     },
-    registro_corrigido_id: {
+    medico_id: {
       type: DataTypes.BIGINT,
       allowNull: false,
     },
-    profissional_id: {
-      type: DataTypes.BIGINT,
+    motivo_retificacao: {
+      type: DataTypes.TEXT,
       allowNull: false,
     },
-    motivo: {
-      type: DataTypes.STRING(500),
+    conteudo_anterior: {
+      type: DataTypes.TEXT,
       allowNull: false,
     },
-    data_criacao: {
+    conteudo_novo: {
+      type: DataTypes.TEXT,
+      allowNull: false,
+    },
+    data_retificacao: {
       type: DataTypes.DATE,
       allowNull: false,
       defaultValue: DataTypes.NOW,
@@ -34,7 +38,7 @@ const RetificacaoRegistro = banco.define(
   },
   {
     schema: "sistema",
-    tableName: "retificacao",
+    tableName: "retificacao_registro",
   },
 );
 
