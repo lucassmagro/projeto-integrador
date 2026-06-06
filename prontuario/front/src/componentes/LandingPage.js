@@ -63,7 +63,7 @@ function SectionHead({ title, sub }) {
 
 function LandingPage() {
     return (
-        <>
+        <div className="main-container">
             {/* Cabeçalho documental do módulo */}
             <div className="doc-masthead">
                 <div className="doc-eyebrow">Módulo G5 · Documentação operacional</div>
@@ -97,197 +97,187 @@ function LandingPage() {
 
             {/* Sobre o módulo */}
             <section className="panel">
-                <SectionHead title="Sobre o módulo" sub="Finalidade e papel no sistema integrado" />
-                <div className="panel-body">
-                    <dl className="deflist">
-                        <div className="dl-row">
-                            <dt>O que é</dt>
-                            <dd>Componente responsável pelo prontuário eletrônico: centraliza o histórico clínico de cada paciente em um único conjunto de registros.</dd>
-                        </div>
-                        <div className="dl-row">
-                            <dt>Finalidade</dt>
-                            <dd>Garantir um registro confiável e auditável dos atendimentos, com integridade dos dados clínicos ao longo do tempo.</dd>
-                        </div>
-                        <div className="dl-row">
-                            <dt>Papel no sistema</dt>
-                            <dd>Recebe dados de consulta (G4) e médico (G2) e fornece o histórico clínico aos módulos de Receitas (G6), Exames (G7) e Telemedicina (G12).</dd>
-                        </div>
-                    </dl>
-                    <p className="prose" style={{ marginTop: 16 }}>
-                        A <strong>imutabilidade</strong> é a regra central do módulo: uma vez gravado, um
-                        registro clínico não é alterado. Qualquer correção é feita por meio de uma{" "}
-                        <strong>retificação</strong>, que preserva o conteúdo original e registra médico
-                        responsável, motivo e data, formando a trilha de auditoria.
-                    </p>
-                </div>
-            </section>
-
-            {/* Funcionalidades (tabela, não cards) */}
-            <section className="panel">
-                <SectionHead title="Funcionalidades" sub="Recursos disponíveis no módulo e operação correspondente" />
-                <div className="panel-body panel-body--flush">
-                    <div className="table-scroll">
-                        <table className="data-table">
-                            <thead>
-                                <tr>
-                                    <th style={{ width: "22%" }}>Funcionalidade</th>
-                                    <th>Descrição</th>
-                                    <th style={{ width: "26%" }}>Operação</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {funcionalidades.map((f) => (
-                                    <tr key={f.nome}>
-                                        <td style={{ fontWeight: 600 }}>{f.nome}</td>
-                                        <td className="muted">{f.desc}</td>
-                                        <td><span className="mono">{f.operacao}</span></td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </section>
-
-            {/* Fluxo operacional */}
-            <section className="panel">
-                <SectionHead title="Fluxo operacional" sub="Da consulta ao histórico clínico" />
-                <div className="panel-body">
-                    <div className="flow">
-                        {fluxo.map((p) => (
-                            <div key={p.passo} className="flow-step">
-                                <div className="flow-num">{p.passo}</div>
-                                <div className="flow-name">{p.nome}</div>
-                                <div className="flow-desc">{p.desc}</div>
+                    <SectionHead title="Sobre o módulo" sub="Finalidade e papel no sistema integrado" />
+                    <div className="panel-body">
+                        <dl className="deflist">
+                            <div className="dl-row">
+                                <dt>O que é</dt>
+                                <dd>Componente responsável pelo prontuário eletrônico: centraliza o histórico clínico de cada paciente em um único conjunto de registros.</dd>
                             </div>
-                        ))}
+                            <div className="dl-row">
+                                <dt>Finalidade</dt>
+                                <dd>Garantir um registro confiável e auditável dos atendimentos, com integridade dos dados clínicos ao longo do tempo.</dd>
+                            </div>
+                            <div className="dl-row">
+                                <dt>Papel no sistema</dt>
+                                <dd>Recebe dados de consulta (G4) e médico (G2) e fornece o histórico clínico aos módulos de Receitas (G6), Exames (G7) e Telemedicina (G12).</dd>
+                            </div>
+                        </dl>
+                        <p className="prose" style={{ marginTop: 16 }}>
+                            A <strong>imutabilidade</strong> é a regra central do módulo: uma vez gravado, um
+                            registro clínico não é alterado. Qualquer correção é feita por meio de uma{" "}
+                            <strong>retificação</strong>, que preserva o conteúdo original e registra médico
+                            responsável, motivo e data, formando a trilha de auditoria.
+                        </p>
                     </div>
-                </div>
-            </section>
+                </section>
 
-            {/* Integrações (tabela) */}
-            <section className="panel">
-                <SectionHead title="Integrações" sub="Módulos que fornecem dados ao prontuário e que o consomem" />
-                <div className="panel-body panel-body--flush">
-                    <div className="table-scroll">
-                        <table className="data-table">
-                            <thead>
-                                <tr>
-                                    <th style={{ width: 80 }}>Grupo</th>
-                                    <th style={{ width: "20%" }}>Módulo</th>
-                                    <th style={{ width: 120 }}>Relação</th>
-                                    <th>Dado trafegado</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {integracoes.map((it) => (
-                                    <tr key={it.grupo}>
-                                        <td><span className="id-ref">{it.grupo}</span></td>
-                                        <td style={{ fontWeight: 600 }}>{it.modulo}</td>
-                                        <td>
-                                            <span className={`tag`} style={it.relacao === "Fornece"
-                                                ? { color: "var(--ok-fg)", background: "var(--ok-bg)", borderColor: "var(--ok-line)" }
-                                                : undefined}>
-                                                {it.relacao}
-                                            </span>
-                                        </td>
-                                        <td className="muted">{it.dado}</td>
+                {/* Funcionalidades */}
+                <section className="panel">
+                    <SectionHead title="Funcionalidades" sub="Recursos disponíveis no módulo e operação correspondente" />
+                    <div className="panel-body panel-body--flush">
+                        <div className="table-scroll">
+                            <table className="data-table">
+                                <thead>
+                                    <tr>
+                                        <th style={{ width: "22%" }}>Funcionalidade</th>
+                                        <th>Descrição</th>
+                                        <th style={{ width: "26%" }}>Operação</th>
                                     </tr>
-                                ))}
-                            </tbody>
-                        </table>
+                                </thead>
+                                <tbody>
+                                    {funcionalidades.map((f) => (
+                                        <tr key={f.nome}>
+                                            <td style={{ fontWeight: 600 }}>{f.nome}</td>
+                                            <td className="muted">{f.desc}</td>
+                                            <td><span className="mono">{f.operacao}</span></td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
-                    <p className="tablenote" style={{ padding: "0 14px 14px" }}>
-                        <strong>Consome:</strong> dados que o prontuário recebe de outros módulos.{" "}
-                        <strong>Fornece:</strong> dados que o prontuário disponibiliza aos demais.
-                    </p>
-                </div>
-            </section>
+                </section>
 
-            {/* Endpoints da API */}
-            <section className="panel">
-                <SectionHead title="Endpoints da API" sub="Interface REST · http://localhost:3005" />
-                <div className="panel-body panel-body--flush">
-                    <div className="table-scroll">
-                        <table className="data-table">
-                            <thead>
-                                <tr>
-                                    <th style={{ width: 90 }}>Método</th>
-                                    <th style={{ width: "42%" }}>Rota</th>
-                                    <th>Descrição</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {endpoints.map((e) => (
-                                    <tr key={e.metodo + e.rota}>
-                                        <td>
-                                            <span className="tag" style={e.metodo === "POST"
-                                                ? { color: "var(--warn-fg)", background: "var(--warn-bg)", borderColor: "var(--warn-line)" }
-                                                : undefined}>
-                                                {e.metodo}
-                                            </span>
-                                        </td>
-                                        <td><span className="mono">{e.rota}</span></td>
-                                        <td className="muted">{e.desc}</td>
+                {/* Fluxo operacional */}
+                <section className="panel">
+                    <SectionHead title="Fluxo operacional" sub="Da consulta ao histórico clínico" />
+                    <div className="panel-body">
+                        <div className="form-grid--row" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '16px' }}>
+                            {fluxo.map((p) => (
+                                <div key={p.passo} style={{ background: '#F8FAFC', border: '1px solid #E2E8F0', padding: '16px', borderRadius: '6px' }}>
+                                    <div style={{ fontFamily: 'var(--font-mono)', fontSize: '12px', fontWeight: 700, color: 'var(--accent)' }}>{p.passo}</div>
+                                    <div style={{ fontSize: '14px', fontWeight: 700, color: 'var(--ink)', margin: '4px 0 8px' }}>{p.nome}</div>
+                                    <div style={{ fontSize: '13px', color: 'var(--ink-2)', lineHeight: 1.5 }}>{p.desc}</div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </section>
+
+                {/* Integrações */}
+                <section className="panel">
+                    <SectionHead title="Integrações" sub="Módulos que fornecem dados ao prontuário e que o consomem" />
+                    <div className="panel-body panel-body--flush">
+                        <div className="table-scroll">
+                            <table className="data-table">
+                                <thead>
+                                    <tr>
+                                        <th style={{ width: 80 }}>Grupo</th>
+                                        <th style={{ width: "20%" }}>Módulo</th>
+                                        <th style={{ width: 120 }}>Relação</th>
+                                        <th>Dado trafegado</th>
                                     </tr>
-                                ))}
-                            </tbody>
-                        </table>
+                                </thead>
+                                <tbody>
+                                    {integracoes.map((it) => (
+                                        <tr key={it.grupo}>
+                                            <td><span className="id-ref">{it.grupo}</span></td>
+                                            <td style={{ fontWeight: 600 }}>{it.modulo}</td>
+                                            <td>
+                                                <span className={`tag`} style={it.relacao === "Fornece"
+                                                    ? { color: "var(--ok-fg)", background: "var(--ok-bg)", borderColor: "var(--ok-line)" }
+                                                    : undefined}>
+                                                    {it.relacao}
+                                                </span>
+                                            </td>
+                                            <td className="muted">{it.dado}</td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+                        <p className="tablenote" style={{ padding: "0 16px 16px" }}>
+                            <strong>Consome:</strong> dados que o prontuário recebe de outros módulos.{" "}
+                            <strong>Fornece:</strong> dados que o prontuário disponibiliza aos demais.
+                        </p>
                     </div>
-                </div>
-            </section>
+                </section>
 
-            {/* Projeto Integrador */}
-            <section className="panel">
-                <SectionHead title="Projeto Integrador" sub="Grupo 5, contexto acadêmico" />
-                <div className="panel-body">
-                    <p className="prose" style={{ marginBottom: 14 }}>
-                        Módulo desenvolvido pelo <strong>Grupo 5</strong> como parte do Projeto Integrador
-                        do curso de Sistemas de Informação. O objetivo é integrar, em um sistema hospitalar
-                        único, as competências das disciplinas do semestre, aplicando-as a um caso real de
-                        gestão de prontuários.
-                    </p>
-                    <dl className="deflist">
-                        <div className="dl-row">
-                            <dt>Integrantes</dt>
-                            <dd>Alexandre Reitemeyer · Beatriz Miranda · Lucas Santos Magro</dd>
+                {/* Endpoints da API */}
+                <section className="panel">
+                    <SectionHead title="Endpoints da API" sub="Interface REST · http://localhost:3005" />
+                    <div className="panel-body panel-body--flush">
+                        <div className="table-scroll">
+                            <table className="data-table">
+                                <thead>
+                                    <tr>
+                                        <th style={{ width: 90 }}>Método</th>
+                                        <th style={{ width: "42%" }}>Rota</th>
+                                        <th>Descrição</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {endpoints.map((e) => (
+                                        <tr key={e.metodo + e.rota}>
+                                            <td>
+                                                <span className="tag" style={e.metodo === "POST"
+                                                    ? { color: "var(--warn-fg)", background: "var(--warn-bg)", borderColor: "var(--warn-line)" }
+                                                    : undefined}>
+                                                    {e.metodo}
+                                                </span>
+                                            </td>
+                                            <td><span className="mono">{e.rota}</span></td>
+                                            <td className="muted">{e.desc}</td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
                         </div>
-                        <div className="dl-row">
-                            <dt>Disciplinas</dt>
-                            <dd>Banco de Dados I · Programação I · Engenharia de Software</dd>
-                        </div>
-                        <div className="dl-row">
-                            <dt>Objetivo</dt>
-                            <dd>Entregar um módulo funcional, integrável e auditável de prontuário eletrônico.</dd>
-                        </div>
-                        <div className="dl-row">
-                            <dt>Atividades</dt>
-                            <dd>
-                                <Link to="/busca">Consultar histórico clínico</Link>{" · "}
-                                <Link to="/registro">Registrar nova evolução</Link>
-                            </dd>
-                        </div>
-                    </dl>
-                </div>
-            </section>
-
-            {/* Repositório */}
-            <section className="panel">
-                <SectionHead title="Repositório" />
-                <div className="panel-body">
-                    <div className="repo">
-                        <i className="bi bi-github"></i>
-                        <div style={{ flex: 1, minWidth: 200 }}>
-                            <div style={{ fontWeight: 600 }}>Código-fonte do Projeto Integrador</div>
-                            <div className="repo-url">{REPO}</div>
-                        </div>
-                        <a className="btn btn--default" href={REPO} target="_blank" rel="noreferrer">
-                            <i className="bi bi-box-arrow-up-right"></i> Abrir no GitHub
-                        </a>
                     </div>
-                </div>
-            </section>
-        </>
+                </section>
+
+                {/* Projeto Integrador */}
+                <section className="panel">
+                    <SectionHead title="Projeto Integrador" sub="Grupo 5, contexto acadêmico" />
+                    <div className="panel-body">
+                        <p className="prose" style={{ marginBottom: 16 }}>
+                            Módulo desenvolvido pelo <strong>Grupo 5</strong> como parte do Projeto Integrador
+                            do curso de Sistemas de Informação. O objetivo é integrar, em um sistema hospitalar
+                            único, as competências das disciplinas do semestre.
+                        </p>
+                        <dl className="deflist">
+                            <div className="dl-row" style={{ gridTemplateColumns: '1fr' }}>
+                                <dt>Integrantes</dt>
+                                <dd>Alexandre Reitemeyer · Beatriz Miranda · Lucas Santos Magro</dd>
+                            </div>
+                            <div className="dl-row" style={{ gridTemplateColumns: '1fr' }}>
+                                <dt>Atividades</dt>
+                                <dd>
+                                    <Link to="/busca">Consultar histórico</Link>{" · "}
+                                    <Link to="/registro">Registrar evolução</Link>
+                                </dd>
+                            </div>
+                        </dl>
+                    </div>
+                </section>
+
+                {/* Repositório */}
+                <section className="panel">
+                    <SectionHead title="Repositório" sub="Código-fonte no GitHub" />
+                    <div className="panel-body">
+                        <div className="repo" style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', padding: '16px 24px', margin: 0 }}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+                                <i className="bi bi-github" style={{ fontSize: '28px', color: 'var(--ink)' }}></i>
+                                <div className="repo-url" style={{ margin: 0 }}>{REPO}</div>
+                            </div>
+                            <a className="btn btn--default" href={REPO} target="_blank" rel="noreferrer">
+                                <i className="bi bi-box-arrow-up-right"></i> Abrir Repositório
+                            </a>
+                        </div>
+                    </div>
+                </section>
+        </div>
     );
 }
 

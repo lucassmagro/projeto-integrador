@@ -110,119 +110,118 @@ function PaginaRegistroCadastro() {
                 </div>
             </div>
 
-            <div className="panel-body">
-                <div className="notice notice--warn">
-                    <i className="bi bi-lock-fill"></i>
-                    <span>O registro é imutável após gravado. Correções devem ser feitas por retificação.</span>
-                </div>
-
-                {/* Dados da consulta (somente leitura) */}
-                <fieldset className="fieldset">
-                    <legend className="legend">Dados da consulta (G4)</legend>
-                    <dl className="deflist" style={{ borderTop: "none" }}>
-                        <div className="dl-row">
-                            <dt>Paciente</dt>
-                            <dd><span className="id-ref">#{CONSULTA.paciente_id}</span></dd>
+            <div className="panel-body panel-body--flush">
+                {/* Banner Clínico da Consulta */}
+                <div className="clinical-banner" style={{ border: 'none', borderBottom: '1px solid var(--line)', borderRadius: 0, marginBottom: 0 }}>
+                    <div className="cb-main">
+                        <div className="cb-avatar">
+                            <i className="bi bi-person"></i>
                         </div>
-                        <div className="dl-row">
-                            <dt>Consulta</dt>
-                            <dd><span className="id-ref">#{CONSULTA.id}</span> (origem do registro)</dd>
+                        <div className="cb-info">
+                            <div className="cb-name">Paciente #{CONSULTA.paciente_id}</div>
+                            <div className="cb-id">Consulta #{CONSULTA.id}</div>
                         </div>
-                        <div className="dl-row">
-                            <dt>Médico responsável</dt>
-                            <dd><span className="id-ref">#{CONSULTA.medico_id}</span> (G2)</dd>
-                        </div>
-                    </dl>
-                </fieldset>
-
-                {/* Histórico anterior (somente leitura) */}
-                {historico.length > 0 && (
-                    <fieldset className="fieldset" style={{ padding: 0 }}>
-                        <legend className="legend" style={{ margin: "16px 0 0 12px" }}>
-                            Registros anteriores ({historico.length})
-                        </legend>
-                        <div className="table-scroll" style={{ marginTop: 10 }}>
-                            <table className="data-table">
-                                <thead>
-                                    <tr>
-                                        <th style={{ width: 70 }}>Reg.</th>
-                                        <th style={{ width: 160 }}>Data/hora</th>
-                                        <th style={{ width: 200 }}>Tipo</th>
-                                        <th>Diagnóstico</th>
-                                        <th>Sintomas</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {historico.map((r) => (
-                                        <tr key={r.id}>
-                                            <td><span className="id-ref">#{r.id}</span></td>
-                                            <td className="num">{formatarData(r.data_registro)}</td>
-                                            <td><span className="tag">{descricaoPorId(r.tipo_registro_id)}</span></td>
-                                            <td><span className="clip">{r.diagnostico || "-"}</span></td>
-                                            <td><span className="clip">{r.sintomas || "-"}</span></td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
-                        </div>
-                    </fieldset>
-                )}
-
-                {/* Novo registro (editável) */}
-                <fieldset className="fieldset">
-                    <legend className="legend">Novo registro</legend>
-                    <div className="form-grid">
-                        <div className="field field--narrow">
-                            <label className="field-label" htmlFor="tipo_registro_id">
-                                Tipo de registro<span className="req">*</span>
-                            </label>
-                            <select
-                                id="tipo_registro_id"
-                                name="tipo_registro_id"
-                                className="field-select"
-                                value={form.tipo_registro_id}
-                                onChange={handleChange}
-                            >
-                                {tipos.map((t) => (
-                                    <option key={t.id} value={t.id}>{t.descricao}</option>
-                                ))}
-                            </select>
-                        </div>
-
-                        {mostrarDiagnostico && (
-                            <div className="field">
-                                <label className="field-label" htmlFor="diagnostico">Diagnóstico<span className="req">*</span></label>
-                                <textarea id="diagnostico" name="diagnostico" rows={3} className="field-textarea"
-                                    value={form.diagnostico} onChange={handleChange} placeholder="Descreva o diagnóstico…" />
-                            </div>
-                        )}
-                        {mostrarSintomas && (
-                            <div className="field">
-                                <label className="field-label" htmlFor="sintomas">Sintomas<span className="req">*</span></label>
-                                <textarea id="sintomas" name="sintomas" rows={3} className="field-textarea"
-                                    value={form.sintomas} onChange={handleChange} placeholder="Descreva os sintomas relatados…" />
-                            </div>
-                        )}
-                        {mostrarObservacoes && (
-                            <div className="field">
-                                <label className="field-label" htmlFor="observacoes">Observações<span className="req">*</span></label>
-                                <textarea id="observacoes" name="observacoes" rows={2} className="field-textarea"
-                                    value={form.observacoes} onChange={handleChange} placeholder="Descreva a observação…" />
-                            </div>
-                        )}
                     </div>
-                </fieldset>
-
-                <div className="form-actions">
-                    <button className="btn btn--default" onClick={() => navigate("/busca")}>
-                        <i className="bi bi-arrow-left"></i> Voltar
-                    </button>
-                    <button className="btn btn--primary" onClick={salvar} disabled={carregando}>
-                        {carregando
-                            ? <><span className="spinner-border spinner-border-sm"></span> Salvando…</>
-                            : <><i className="bi bi-check2"></i> Gravar registro</>}
-                    </button>
+                    <div className="cb-meta">
+                        <div className="cb-meta-item">
+                            <span className="cb-meta-label">Médico Responsável</span>
+                            <span className="cb-meta-value">#{CONSULTA.medico_id}</span>
+                        </div>
+                    </div>
                 </div>
+
+                <div style={{ padding: '24px' }}>
+                    <div className="notice notice--warn" style={{ marginBottom: '32px' }}>
+                        <i className="bi bi-lock-fill"></i>
+                        <span>O registro é imutável após gravado. Correções devem ser feitas por retificação.</span>
+                    </div>
+
+                    <div className="split-layout">
+                    {/* Histórico anterior (somente leitura) */}
+                    <div className="history-col">
+                        <fieldset className="fieldset" style={{ height: '100%', marginBottom: 0 }}>
+                            <legend className="legend">Histórico Clínico</legend>
+                            {historico.length > 0 ? (
+                                <div className="history-timeline">
+                                    {historico.map((r) => (
+                                        <div className="timeline-card" key={r.id}>
+                                            <span className="timeline-date">{formatarData(r.data_registro)}</span>
+                                            <span className="tag timeline-type">{descricaoPorId(r.tipo_registro_id)}</span>
+                                            <div className="timeline-content">
+                                                {r.diagnostico && <div><strong>Diagnóstico:</strong> {r.diagnostico}</div>}
+                                                {r.sintomas && <div><strong>Sintomas:</strong> {r.sintomas}</div>}
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            ) : (
+                                <div className="empty" style={{ padding: '32px 16px', margin: 0, border: 'none', background: 'transparent' }}>
+                                    <i className="bi bi-clipboard-x" style={{ fontSize: '24px', marginBottom: '8px' }}></i>
+                                    <strong>Sem histórico anterior.</strong>
+                                </div>
+                            )}
+                        </fieldset>
+                    </div>
+
+                    {/* Novo registro (editável) */}
+                    <div className="form-col">
+                        <fieldset className="fieldset" style={{ marginBottom: 0 }}>
+                            <legend className="legend">Novo registro</legend>
+                            <div className="form-grid">
+                                <div className="field">
+                                    <label className="field-label" htmlFor="tipo_registro_id">
+                                        Tipo de registro<span className="req">*</span>
+                                    </label>
+                                    <select
+                                        id="tipo_registro_id"
+                                        name="tipo_registro_id"
+                                        className="field-select"
+                                        value={form.tipo_registro_id}
+                                        onChange={handleChange}
+                                    >
+                                        {tipos.map((t) => (
+                                            <option key={t.id} value={t.id}>{t.descricao}</option>
+                                        ))}
+                                    </select>
+                                </div>
+
+                                {mostrarDiagnostico && (
+                                    <div className="field">
+                                        <label className="field-label" htmlFor="diagnostico">Diagnóstico<span className="req">*</span></label>
+                                        <textarea id="diagnostico" name="diagnostico" rows={3} className="field-textarea"
+                                            value={form.diagnostico} onChange={handleChange} placeholder="Descreva o diagnóstico…" />
+                                    </div>
+                                )}
+                                {mostrarSintomas && (
+                                    <div className="field">
+                                        <label className="field-label" htmlFor="sintomas">Sintomas<span className="req">*</span></label>
+                                        <textarea id="sintomas" name="sintomas" rows={3} className="field-textarea"
+                                            value={form.sintomas} onChange={handleChange} placeholder="Descreva os sintomas relatados…" />
+                                    </div>
+                                )}
+                                {mostrarObservacoes && (
+                                    <div className="field">
+                                        <label className="field-label" htmlFor="observacoes">Observações<span className="req">*</span></label>
+                                        <textarea id="observacoes" name="observacoes" rows={2} className="field-textarea"
+                                            value={form.observacoes} onChange={handleChange} placeholder="Descreva a observação…" />
+                                    </div>
+                                )}
+                            </div>
+                        </fieldset>
+
+                        <div className="form-actions" style={{ marginTop: '32px', paddingTop: '24px' }}>
+                            <button className="btn btn--default" onClick={() => navigate("/busca")}>
+                                <i className="bi bi-arrow-left"></i> Voltar
+                            </button>
+                            <button className="btn btn--primary" onClick={salvar} disabled={carregando}>
+                                {carregando
+                                    ? <><span className="spinner-border spinner-border-sm"></span> Salvando…</>
+                                    : <><i className="bi bi-check2"></i> Gravar registro</>}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
             </div>
         </section>
     );

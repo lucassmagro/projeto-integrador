@@ -76,66 +76,77 @@ function PaginaRetificacaoForm() {
                     </div>
                 </div>
 
-                <div className="panel-body">
-                    {/* Registro de referência (somente leitura) */}
+                <div className="panel-body panel-body--flush">
+                    {/* Registro de referência (Clinical Banner) */}
                     {registro && (
-                        <div className="record-block">
-                            <div className="record-block-head">
-                                <span className="rb-id">Registro #{registro.id}</span>
-                                <span><span className="rb-k">Consulta: </span><span className="rb-v">#{registro.consulta_id}</span></span>
-                                <span><span className="rb-k">Médico: </span><span className="rb-v">#{registro.medico_id}</span></span>
-                                <span><span className="rb-k">Data: </span><span className="rb-v">{formatarData(registro.data_registro)}</span></span>
+                        <div className="clinical-banner" style={{ border: 'none', borderBottom: '1px solid var(--line)', borderRadius: 0, marginBottom: 0 }}>
+                            <div className="cb-main">
+                                <div className="cb-avatar" style={{ background: 'var(--warn-fg)' }}>
+                                    <i className="bi bi-file-medical"></i>
+                                </div>
+                                <div className="cb-info">
+                                    <div className="cb-name">Registro #{registro.id}</div>
+                                    <div className="cb-id">Consulta #{registro.consulta_id}</div>
+                                </div>
                             </div>
-                            <div className="record-block-body">
-                                <div className="rb-orig-label">Diagnóstico original</div>
-                                {registro.diagnostico || "-"}
+                            <div className="cb-meta">
+                                <div className="cb-meta-item">
+                                    <span className="cb-meta-label">Data Original</span>
+                                    <span className="cb-meta-value">{formatarData(registro.data_registro)}</span>
+                                </div>
+                                <div className="cb-meta-item">
+                                    <span className="cb-meta-label">Médico</span>
+                                    <span className="cb-meta-value">#{registro.medico_id}</span>
+                                </div>
                             </div>
                         </div>
                     )}
 
-                    <div className="notice notice--info">
-                        <i className="bi bi-info-circle"></i>
-                        <span>O registro original é preservado. A retificação cria uma correção vinculada, com trilha de auditoria.</span>
-                    </div>
-
-                    <fieldset className="fieldset">
-                        <legend className="legend">Dados da retificação</legend>
-                        <div className="form-grid">
-                            <div className="field field--narrow">
-                                <label className="field-label" htmlFor="medico_id">ID do médico responsável<span className="req">*</span></label>
-                                <input id="medico_id" type="number" name="medico_id" className="field-input"
-                                    value={form.medico_id} onChange={handleChange} placeholder="Ex.: 3" />
-                            </div>
-                            <div className="field">
-                                <label className="field-label" htmlFor="motivo_retificacao">Motivo da retificação<span className="req">*</span></label>
-                                <input id="motivo_retificacao" type="text" name="motivo_retificacao" className="field-input"
-                                    value={form.motivo_retificacao} onChange={handleChange} placeholder="Ex.: Erro de digitação no diagnóstico" />
-                            </div>
-                            <div className="form-grid form-grid--2">
-                                <div className="field">
-                                    <label className="field-label" htmlFor="conteudo_anterior">Conteúdo anterior</label>
-                                    <textarea id="conteudo_anterior" name="conteudo_anterior" rows={3} className="field-textarea"
-                                        value={form.conteudo_anterior} readOnly />
-                                    <span className="field-help">Preenchido a partir do registro original.</span>
-                                </div>
-                                <div className="field">
-                                    <label className="field-label" htmlFor="conteudo_novo">Conteúdo correto<span className="req">*</span></label>
-                                    <textarea id="conteudo_novo" name="conteudo_novo" rows={3} className="field-textarea"
-                                        value={form.conteudo_novo} onChange={handleChange} placeholder="Informe o conteúdo correto…" />
-                                </div>
-                            </div>
+                    <div style={{ padding: '24px' }}>
+                        <div className="notice notice--info" style={{ marginBottom: '32px' }}>
+                            <i className="bi bi-info-circle"></i>
+                            <span>O registro original é preservado. A retificação cria uma correção vinculada, com trilha de auditoria.</span>
                         </div>
-                    </fieldset>
 
-                    <div className="form-actions">
-                        <button className="btn btn--default" onClick={() => navigate("/busca")}>
-                            <i className="bi bi-arrow-left"></i> Voltar
-                        </button>
-                        <button className="btn btn--primary" onClick={salvar} disabled={carregando}>
-                            {carregando
-                                ? <><span className="spinner-border spinner-border-sm"></span> Salvando…</>
-                                : <><i className="bi bi-check2"></i> Gravar retificação</>}
-                        </button>
+                        <fieldset className="fieldset">
+                            <legend className="legend">Dados da retificação</legend>
+                            <div className="form-grid">
+                                <div className="field field--narrow">
+                                    <label className="field-label" htmlFor="medico_id">ID do médico responsável<span className="req">*</span></label>
+                                    <input id="medico_id" type="number" name="medico_id" className="field-input"
+                                        value={form.medico_id} onChange={handleChange} placeholder="Ex.: 3" />
+                                </div>
+                                <div className="field">
+                                    <label className="field-label" htmlFor="motivo_retificacao">Motivo da retificação<span className="req">*</span></label>
+                                    <input id="motivo_retificacao" type="text" name="motivo_retificacao" className="field-input"
+                                        value={form.motivo_retificacao} onChange={handleChange} placeholder="Ex.: Erro de digitação no diagnóstico" />
+                                </div>
+                                <div className="form-grid--row">
+                                    <div className="field">
+                                        <label className="field-label" htmlFor="conteudo_anterior">Conteúdo anterior</label>
+                                        <textarea id="conteudo_anterior" name="conteudo_anterior" rows={3} className="field-textarea"
+                                            value={form.conteudo_anterior} readOnly />
+                                        <span className="field-help">Preenchido a partir do registro original.</span>
+                                    </div>
+                                    <div className="field">
+                                        <label className="field-label" htmlFor="conteudo_novo">Conteúdo correto<span className="req">*</span></label>
+                                        <textarea id="conteudo_novo" name="conteudo_novo" rows={3} className="field-textarea"
+                                            value={form.conteudo_novo} onChange={handleChange} placeholder="Informe o conteúdo correto…" />
+                                    </div>
+                                </div>
+                            </div>
+                        </fieldset>
+
+                        <div className="form-actions" style={{ marginTop: '32px', paddingTop: '24px' }}>
+                            <button className="btn btn--default" onClick={() => navigate("/busca")}>
+                                <i className="bi bi-arrow-left"></i> Voltar
+                            </button>
+                            <button className="btn btn--primary" onClick={salvar} disabled={carregando}>
+                                {carregando
+                                    ? <><span className="spinner-border spinner-border-sm"></span> Salvando…</>
+                                    : <><i className="bi bi-check2"></i> Gravar retificação</>}
+                            </button>
+                        </div>
                     </div>
                 </div>
             </section>

@@ -83,23 +83,23 @@ function PaginaInicial() {
             {/* Resultado */}
             {resultado && (
                 <section className="panel">
-                    {/* Cabeçalho de paciente */}
-                    <div className="patient-bar">
-                        <div className="patient-id">
-                            Prontuário <span className="pid-num">#{resultado.prontuario.id}</span>
+                    {/* Cabeçalho de paciente (Clinical Banner) */}
+                    <div className="clinical-banner" style={{ border: 'none', borderBottom: '1px solid var(--line)', borderRadius: 0, marginBottom: 0 }}>
+                        <div className="cb-main">
+                            <div className="cb-avatar">P</div>
+                            <div className="cb-info">
+                                <div className="cb-name">Paciente #{resultado.prontuario.paciente_id}</div>
+                                <div className="cb-id">Prontuário #{resultado.prontuario.id}</div>
+                            </div>
                         </div>
-                        <div className="patient-attrs">
-                            <div className="attr">
-                                <span className="attr-k">Paciente</span>
-                                <span className="attr-v">#{resultado.prontuario.paciente_id}</span>
+                        <div className="cb-meta">
+                            <div className="cb-meta-item">
+                                <span className="cb-meta-label">Aberto em</span>
+                                <span className="cb-meta-value">{formatarData(resultado.prontuario.data_criacao)}</span>
                             </div>
-                            <div className="attr">
-                                <span className="attr-k">Aberto em</span>
-                                <span className="attr-v">{formatarData(resultado.prontuario.data_criacao)}</span>
-                            </div>
-                            <div className="attr">
-                                <span className="attr-k">Registros</span>
-                                <span className="attr-v">{resultado.registros.length}</span>
+                            <div className="cb-meta-item">
+                                <span className="cb-meta-label">Registros</span>
+                                <span className="cb-meta-value">{resultado.registros.length}</span>
                             </div>
                         </div>
                     </div>
