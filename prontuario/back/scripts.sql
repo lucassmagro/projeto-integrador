@@ -31,8 +31,8 @@ create table registro_clinico (
   consulta_id      bigint    not null,  -- referencia externa G4
   medico_id        bigint    not null,  -- referencia externa G2
   tipo_registro_id integer   not null,
-  diagnostico      text      not null,
-  sintomas         text      not null,
+  diagnostico      text,
+  sintomas         text,
   observacoes      text,
   data_registro    timestamp not null default current_timestamp,
   retificado       boolean   not null default false,
