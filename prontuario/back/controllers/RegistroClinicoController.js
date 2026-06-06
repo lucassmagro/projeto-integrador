@@ -2,9 +2,7 @@ import RegistroClinico from "../models/RegistroClinico.js";
 import Prontuario from "../models/Prontuario.js";
 import axios from "axios";
 
-const dadosconsulta =
-  { id: 1, paciente_id: 1, medico_id: 1 }
-
+const dadosconsulta = { id: 1, paciente_id: 1, medico_id: 1 };
 
 // Função que simula o fetch com 1 segundo de atraso (latência)
 export const buscaConsulta = () => {
@@ -32,21 +30,27 @@ async function selecionar(req, res) {
 }
 
 async function inserir(req, res) {
-  const { consulta_id, tipo_registro_id, diagnostico, sintomas, observacoes } = req.body;
+  const { consulta_id, tipo_registro_id, diagnostico, sintomas, observacoes } =
+    req.body;
 
   try {
+    const consulta = await buscaConsulta();
 
-    const consulta = await buscaConsulta()
-
-    if (!consulta) return res.status(422).json({
-      mensagem: "Consulta inválida, não encontrada ou cancelada. Não é possível registrar.",
-    });
+    if (!consulta)
+      return res.status(422).json({
+        mensagem:
+          "Consulta inválida, não encontrada ou cancelada. Não é possível registrar.",
+      });
 
     // Busca ou cria o prontuário do paciente
-    let prontuario = await Prontuario.findOne({ where: { paciente_id: consulta.paciente_id } });
+    let prontuario = await Prontuario.findOne({
+      where: { paciente_id: consulta.paciente_id },
+    });
 
     if (!prontuario) {
-      prontuario = await Prontuario.create({ paciente_id: consulta.paciente_id });
+      prontuario = await Prontuario.create({
+        paciente_id: consulta.paciente_id,
+      });
     }
 
     // Cria o registro clínico (imutável a partir deste momento)
@@ -61,10 +65,10 @@ async function inserir(req, res) {
     });
 
     return res.status(201).json(dados);
-
   } catch (erro) {
     return res.status(422).json({
-      mensagem: "Não foi possível validar a consulta no módulo G4. Verifique o ID informado.",
+      mensagem:
+        "Não foi possível validar a consulta no módulo G4. Verifique o ID informado.",
     });
   }
 }

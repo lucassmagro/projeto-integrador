@@ -4,10 +4,21 @@
 -- SGBD: PostgreSQL 16
 -- Padrao de nomes: snake_case, sem acentuacao
 -- Modelagem normalizada ate a 3FN
+--
+-- ADAPTACAO: substituido UUID + gen_random_uuid() por BIGSERIAL / BIGINT.
+--   BIGSERIAL PRIMARY KEY  => chave primaria inteira autoincrementada
+--   BIGINT NOT NULL        => coluna de chave estrangeira ou referencia externa
 -- =============================================================================
 
 -- =============================================================================
--- 0. TIPOS ENUMERADOS (espelham os enums do diagrama de classes)
+-- 0. SCHEMA
+-- =============================================================================
+
+CREATE SCHEMA IF NOT EXISTS sistema;
+SET search_path TO sistema;
+
+-- =============================================================================
+-- 0. TIPOS ENUMERADOS
 -- =============================================================================
 
 CREATE TYPE role_profissional AS ENUM ('MEDICO', 'ENFERMEIRO', 'AUDITOR');
@@ -27,24 +38,23 @@ CREATE TYPE tipo_registro     AS ENUM (
 
 -- Profissional de saude autorizado a registrar (RNF02).
 CREATE TABLE usuario_profissional (
-    id    UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    nome  VARCHAR(150)      NOT NULL,
+    id    BIGSERIAL        PRIMARY KEY,   -- antes: UUID PRIMARY KEY DEFAULT gen_random_uuid()
+    nome  VARCHAR(150)     NOT NULL,
     role  role_profissional NOT NULL
 );
 
--- Raiz do agregado. paciente_id referencia G1 (outro modulo): sem FK fisica,
--- pois o dado vive em outro banco -- padrao de microsservicos.
+-- Raiz do agregado. paciente_id referencia G1 (outro modulo): sem FK fisica.
 CREATE TABLE prontuario (
-    id           UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    paciente_id  UUID      NOT NULL,
-    data_criacao TIMESTAMP NOT NULL DEFAULT now(),
+    id           BIGSERIAL  PRIMARY KEY,  -- antes: UUID PRIMARY KEY DEFAULT gen_random_uuid()
+    paciente_id  BIGINT     NOT NULL,     -- antes: UUID NOT NULL
+    data_criacao TIMESTAMP  NOT NULL DEFAULT now(),
     CONSTRAINT uq_prontuario_paciente UNIQUE (paciente_id)
 );
 
--- Alergias relevantes do paciente (compoem o resumo clinico - RF04).
+-- Alergias relevantes do paciente (RF04).
 CREATE TABLE alergia (
-    id            UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    prontuario_id UUID         NOT NULL,
+    id            BIGSERIAL    PRIMARY KEY,  -- antes: UUID PRIMARY KEY DEFAULT gen_random_uuid()
+    prontuario_id BIGINT       NOT NULL,     -- antes: UUID NOT NULL
     descricao     VARCHAR(200) NOT NULL,
     CONSTRAINT fk_alergia_prontuario
         FOREIGN KEY (prontuario_id) REFERENCES prontuario (id)
@@ -52,10 +62,10 @@ CREATE TABLE alergia (
 
 -- Registro clinico imutavel (RF01/RF02). consulta_id referencia G4 (sem FK fisica).
 CREATE TABLE registro_clinico (
-    id              UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    prontuario_id   UUID            NOT NULL,
-    consulta_id     UUID            NOT NULL,
-    profissional_id UUID            NOT NULL,
+    id              BIGSERIAL       PRIMARY KEY,  -- antes: UUID PRIMARY KEY DEFAULT gen_random_uuid()
+    prontuario_id   BIGINT          NOT NULL,     -- antes: UUID NOT NULL
+    consulta_id     BIGINT          NOT NULL,     -- antes: UUID NOT NULL
+    profissional_id BIGINT          NOT NULL,     -- antes: UUID NOT NULL
     tipo            tipo_registro   NOT NULL,
     status          status_registro NOT NULL DEFAULT 'ATIVO',
     data_registro   TIMESTAMP       NOT NULL DEFAULT now(),
@@ -70,8 +80,8 @@ CREATE INDEX idx_registro_consulta   ON registro_clinico (consulta_id);
 
 -- Diagnosticos do registro (1..*).
 CREATE TABLE diagnostico (
-    id          UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    registro_id UUID         NOT NULL,
+    id          BIGSERIAL    PRIMARY KEY,  -- antes: UUID PRIMARY KEY DEFAULT gen_random_uuid()
+    registro_id BIGINT       NOT NULL,    -- antes: UUID NOT NULL
     codigo_cid  VARCHAR(10)  NOT NULL,
     descricao   VARCHAR(500) NOT NULL,
     ativo       BOOLEAN      NOT NULL DEFAULT TRUE,
@@ -81,8 +91,8 @@ CREATE TABLE diagnostico (
 
 -- Sintomas do registro (0..*).
 CREATE TABLE sintoma (
-    id          UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    registro_id UUID         NOT NULL,
+    id          BIGSERIAL    PRIMARY KEY,  -- antes: UUID PRIMARY KEY DEFAULT gen_random_uuid()
+    registro_id BIGINT       NOT NULL,    -- antes: UUID NOT NULL
     descricao   VARCHAR(500) NOT NULL,
     intensidade SMALLINT     NOT NULL,
     CONSTRAINT fk_sintoma_registro
@@ -92,8 +102,8 @@ CREATE TABLE sintoma (
 
 -- Observacoes clinicas do registro (0..*).
 CREATE TABLE observacao_clinica (
-    id          UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    registro_id UUID          NOT NULL,
+    id          BIGSERIAL     PRIMARY KEY,  -- antes: UUID PRIMARY KEY DEFAULT gen_random_uuid()
+    registro_id BIGINT        NOT NULL,    -- antes: UUID NOT NULL
     descricao   VARCHAR(1000) NOT NULL,
     CONSTRAINT fk_observacao_registro
         FOREIGN KEY (registro_id) REFERENCES registro_clinico (id)
@@ -101,9 +111,9 @@ CREATE TABLE observacao_clinica (
 
 -- Adendo: complementacao posterior sem alterar o original (RF05).
 CREATE TABLE adendo_clinico (
-    id              UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    registro_id     UUID          NOT NULL,
-    profissional_id UUID          NOT NULL,
+    id              BIGSERIAL     PRIMARY KEY,  -- antes: UUID PRIMARY KEY DEFAULT gen_random_uuid()
+    registro_id     BIGINT        NOT NULL,    -- antes: UUID NOT NULL
+    profissional_id BIGINT        NOT NULL,    -- antes: UUID NOT NULL
     descricao       VARCHAR(1000) NOT NULL,
     data_criacao    TIMESTAMP     NOT NULL DEFAULT now(),
     CONSTRAINT fk_adendo_registro
@@ -114,12 +124,12 @@ CREATE TABLE adendo_clinico (
 
 -- Retificacao: correcao legal que aponta para o original e gera novo registro (RF02).
 CREATE TABLE retificacao (
-    id                   UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    registro_original_id UUID         NOT NULL,
-    registro_corrigido_id UUID        NOT NULL,
-    profissional_id      UUID         NOT NULL,
-    motivo               VARCHAR(500) NOT NULL,
-    data_criacao         TIMESTAMP    NOT NULL DEFAULT now(),
+    id                    BIGSERIAL    PRIMARY KEY,  -- antes: UUID PRIMARY KEY DEFAULT gen_random_uuid()
+    registro_original_id  BIGINT       NOT NULL,    -- antes: UUID NOT NULL
+    registro_corrigido_id BIGINT       NOT NULL,    -- antes: UUID NOT NULL
+    profissional_id       BIGINT       NOT NULL,    -- antes: UUID NOT NULL
+    motivo                VARCHAR(500) NOT NULL,
+    data_criacao          TIMESTAMP    NOT NULL DEFAULT now(),
     CONSTRAINT fk_retif_original
         FOREIGN KEY (registro_original_id)  REFERENCES registro_clinico (id),
     CONSTRAINT fk_retif_corrigido
@@ -131,20 +141,19 @@ CREATE TABLE retificacao (
 
 -- Trilha de auditoria persistente (RNF05 / LGPD).
 CREATE TABLE log_auditoria (
-    id              UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    usuario_id      UUID         NOT NULL,
-    paciente_id     UUID         NOT NULL,
-    ip_origem       VARCHAR(45)  NOT NULL,
-    acao_executada  VARCHAR(100) NOT NULL,
-    data_hora       TIMESTAMP    NOT NULL DEFAULT now()
+    id             BIGSERIAL    PRIMARY KEY,  -- antes: UUID PRIMARY KEY DEFAULT gen_random_uuid()
+    usuario_id     BIGINT       NOT NULL,    -- antes: UUID NOT NULL
+    paciente_id    BIGINT       NOT NULL,    -- antes: UUID NOT NULL
+    ip_origem      VARCHAR(45)  NOT NULL,
+    acao_executada VARCHAR(100) NOT NULL,
+    data_hora      TIMESTAMP    NOT NULL DEFAULT now()
 );
 
 CREATE INDEX idx_auditoria_paciente ON log_auditoria (paciente_id);
 
 -- =============================================================================
 -- 2. VIEW - Resumo Clinico (RF04)
--- Consumida por G6 (Receitas), G7 (Exames) e G12 (Telemedicina).
--- Entrega diagnosticos ativos, alergias e ultima atualizacao por paciente.
+-- Sem alteracoes: a view nao referencia o tipo UUID diretamente.
 -- =============================================================================
 
 CREATE OR REPLACE VIEW vw_resumo_clinico AS
@@ -182,8 +191,7 @@ FROM prontuario p;
 
 -- =============================================================================
 -- 3. TRIGGER - Imutabilidade do registro clinico (RF02)
--- Bloqueia DELETE fisico e qualquer UPDATE, exceto a transicao controlada
--- de status ATIVO -> RETIFICADO (usada exclusivamente pela procedure).
+-- Sem alteracoes: a funcao opera sobre OLD/NEW, nao sobre tipos UUID.
 -- =============================================================================
 
 CREATE OR REPLACE FUNCTION fn_impedir_alteracao_registro()
@@ -194,7 +202,6 @@ BEGIN
             'RF02: exclusao fisica de registro clinico nao permitida. Utilize retificacao.';
     END IF;
 
-    -- TG_OP = 'UPDATE': nenhum dado clinico pode ser sobrescrito.
     IF (NEW.id              IS DISTINCT FROM OLD.id
         OR NEW.prontuario_id   IS DISTINCT FROM OLD.prontuario_id
         OR NEW.consulta_id     IS DISTINCT FROM OLD.consulta_id
@@ -221,13 +228,12 @@ CREATE TRIGGER trg_imutabilidade_registro
 
 -- =============================================================================
 -- 4. STORED PROCEDURE - Registrar Retificacao (RF02 + RNF02 + RNF05)
--- Operacao atomica: valida o profissional, cria o registro corrigido,
--- marca o original como RETIFICADO, grava a retificacao e a auditoria.
+-- Alteracao: todos os parametros e variaveis UUID passam a ser BIGINT.
 -- =============================================================================
 
 CREATE OR REPLACE PROCEDURE sp_registrar_retificacao(
-    p_registro_original_id UUID,
-    p_profissional_id      UUID,
+    p_registro_original_id BIGINT,          -- antes: UUID
+    p_profissional_id      BIGINT,          -- antes: UUID
     p_motivo               VARCHAR,
     p_tipo                 tipo_registro,
     p_ip_origem            VARCHAR
@@ -235,10 +241,10 @@ CREATE OR REPLACE PROCEDURE sp_registrar_retificacao(
 LANGUAGE plpgsql AS $$
 DECLARE
     v_role          role_profissional;
-    v_prontuario_id UUID;
-    v_consulta_id   UUID;
-    v_paciente_id   UUID;
-    v_novo_id       UUID;
+    v_prontuario_id BIGINT;                 -- antes: UUID
+    v_consulta_id   BIGINT;                 -- antes: UUID
+    v_paciente_id   BIGINT;                 -- antes: UUID
+    v_novo_id       BIGINT;                 -- antes: UUID
 BEGIN
     -- RNF02: somente MEDICO ou ENFERMEIRO podem registrar.
     SELECT role INTO v_role
@@ -265,7 +271,7 @@ BEGIN
         RAISE EXCEPTION 'Registro original inexistente ou ja retificado.';
     END IF;
 
-    -- Cria o novo registro (correcao).
+    -- Cria o novo registro (correcao) e captura o id gerado pelo BIGSERIAL.
     INSERT INTO registro_clinico (prontuario_id, consulta_id, profissional_id, tipo, status)
     VALUES (v_prontuario_id, v_consulta_id, p_profissional_id, p_tipo, 'ATIVO')
     RETURNING id INTO v_novo_id;

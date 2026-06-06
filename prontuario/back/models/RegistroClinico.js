@@ -18,35 +18,23 @@ const RegistroClinico = banco.define(
       type: DataTypes.BIGINT,
       allowNull: false,
     },
-    medico_id: {
+    profissional_id: {
       type: DataTypes.BIGINT,
       allowNull: false,
     },
-    tipo_registro_id: {
-      type: DataTypes.INTEGER,
+    tipo: {
+      type: DataTypes.STRING,
       allowNull: false,
     },
-    diagnostico: {
-      type: DataTypes.TEXT,
+    status: {
+      type: DataTypes.STRING,
       allowNull: false,
-    },
-    sintomas: {
-      type: DataTypes.TEXT,
-      allowNull: false,
-    },
-    observacoes: {
-      type: DataTypes.TEXT,
-      allowNull: true,
+      defaultValue: "ATIVO",
     },
     data_registro: {
       type: DataTypes.DATE,
       allowNull: false,
       defaultValue: DataTypes.NOW,
-    },
-    retificado: {
-      type: DataTypes.BOOLEAN,
-      allowNull: false,
-      defaultValue: false,
     },
   },
   {

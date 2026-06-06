@@ -1,15 +1,27 @@
+import banco from "../Banco.js";
 import Prontuario from "../models/Prontuario.js";
 import RegistroClinico from "../models/RegistroClinico.js";
-import TipoRegistro from "../models/TipoRegistro.js";
 
-// Busca o prontuário de um paciente com todos os registros clínicos
+async function getDiagnostico(registro_id) {
+  const [rows] = await banco.query(
+    "SELECT descricao FROM sistema.diagnostico WHERE registro_id = :id LIMIT 1",
+    { replacements: { id: registro_id } }
+  );
+  return rows[0]?.descricao || null;
+}
+
+async function getSintomas(registro_id) {
+  const [rows] = await banco.query(
+    "SELECT descricao FROM sistema.sintoma WHERE registro_id = :id LIMIT 1",
+    { replacements: { id: registro_id } }
+  );
+  return rows[0]?.descricao || null;
+}
+
 async function buscarPorPaciente(req, res) {
   const paciente_id = req.params.paciente_id;
 
-  const prontuario = await Prontuario.findOne({
-    where: { paciente_id: paciente_id },
-  });
-
+  const prontuario = await Prontuario.findOne({ where: { paciente_id } });
   if (!prontuario) {
     return res.status(404).json({ mensagem: "Prontuário não encontrado para este paciente." });
   }
@@ -19,19 +31,21 @@ async function buscarPorPaciente(req, res) {
     order: [["data_registro", "DESC"]],
   });
 
-  const tipos = await TipoRegistro.findAll();
-  const tipoMap = {};
-  tipos.forEach((t) => (tipoMap[t.id] = t.descricao));
-
-  const registrosComTipo = registros.map((r) => ({
-    ...r.dataValues,
-    tipo_descricao: tipoMap[r.tipo_registro_id] || "-",
+  const registrosComDados = await Promise.all(registros.map(async (r) => {
+    const diagnostico = await getDiagnostico(r.id);
+    const sintomas = await getSintomas(r.id);
+    return {
+      ...r.dataValues,
+      diagnostico,
+      sintomas,
+      tipo_descricao: r.tipo,
+      retificado: r.status === "RETIFICADO",
+    };
   }));
 
-  return res.json({ prontuario, registros: registrosComTipo });
+  return res.json({ prontuario, registros: registrosComDados });
 }
 
-// Busca prontuário por ID do prontuário (usado por módulos externos: G6, G7, G12)
 async function buscarPorId(req, res) {
   const id = req.params.id;
 
@@ -45,7 +59,19 @@ async function buscarPorId(req, res) {
     order: [["data_registro", "DESC"]],
   });
 
-  return res.json({ prontuario, registros });
+  const registrosComDados = await Promise.all(registros.map(async (r) => {
+    const diagnostico = await getDiagnostico(r.id);
+    const sintomas = await getSintomas(r.id);
+    return {
+      ...r.dataValues,
+      diagnostico,
+      sintomas,
+      tipo_descricao: r.tipo,
+      retificado: r.status === "RETIFICADO",
+    };
+  }));
+
+  return res.json({ prontuario, registros: registrosComDados });
 }
 
 export default { buscarPorPaciente, buscarPorId };

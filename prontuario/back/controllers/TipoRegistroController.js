@@ -1,13 +1,12 @@
-import TipoRegistro from "../models/TipoRegistro.js";
+const TIPOS = [
+  { id: 1, descricao: "EVOLUCAO_MEDICA" },
+  { id: 2, descricao: "EVOLUCAO_ENFERMAGEM" },
+  { id: 3, descricao: "ANAMNESE" },
+  { id: 4, descricao: "OBSERVACAO_ENFERMAGEM" },
+];
 
-async function listar(req, res) {
-  try {
-    const dados = await TipoRegistro.findAll();
-    return res.json(dados);
-  } catch (erro) {
-    console.error("Erro ao listar tipos de registro:", erro);
-    return res.status(500).json({ error: "Erro ao carregar tipos de registro." });
-  }
+function listar(req, res) {
+  return res.json(TIPOS);
 }
 
 export default { listar };
