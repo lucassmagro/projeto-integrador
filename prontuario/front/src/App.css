@@ -29,8 +29,8 @@
   --line: #e2e8f0; /* Bordas super claras */
   --line-soft: #f1f5f9;
   --row-head: #f8fafc;
-  --row-zebra: #ffffff; /* Remoção do zebra marcante, priorizando higiene */
-  --row-hover: #f1f5f9;
+  --row-zebra: #f8fafc; /* Zebra striping suave para o light mode */
+  --row-hover: #e2e8f0; /* Hover um pouco mais escuro já que o zebra usa f8fafc */
 
   /* Estados (Alertas e Semânticas) */
   --ok-fg: #166534;
@@ -77,7 +77,7 @@
   --line: #30363d;
   --line-soft: #21262d;
   --row-head: #161b22;
-  --row-zebra: #0d1117;
+  --row-zebra: #1c2128;
   --row-hover: #21262d;
 
   --ok-bg: #1a3424;
