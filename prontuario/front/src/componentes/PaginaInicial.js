@@ -30,7 +30,7 @@ function PaginaInicial() {
     useEffect(() => {
         get("tipo-registro")
             .then((dados) => setTipos(dados))
-            .catch(() => {});
+            .catch(() => { });
     }, []);
 
     const descricaoTipo = (id) =>
@@ -94,31 +94,104 @@ function PaginaInicial() {
         <head>
           <meta charset="UTF-8">
           <title>Prontuário — Paciente #${resultado.prontuario.paciente_id}</title>
+          <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
           <style>
-            body { font-family: Arial, sans-serif; padding: 40px;
-                   color: #1a1a1a; font-size: 13px; }
-            h1 { font-size: 20px; margin-bottom: 4px; }
-            .subtitulo { color: #555; margin-bottom: 24px; font-size: 13px; }
-            .info-linha { display: flex; gap: 40px; margin-bottom: 24px;
-                          border-bottom: 2px solid #1a56db; padding-bottom: 12px; }
-            .info-item label { font-weight: bold; display: block;
-                               font-size: 11px; color: #555; }
-            .info-item span { font-size: 14px; }
+            :root {
+              --accent: #0284c7;
+              --ink: #0f172a;
+              --ink-2: #334155;
+              --ink-3: #475569;
+              --line: #e2e8f0;
+              --line-soft: #f1f5f9;
+              --row-head: #f8fafc;
+              --row-zebra: #ffffff;
+              --ok-fg: #166534;
+              --ok-bg: #dcfce7;
+              --danger-fg: #991b1b;
+              --danger-bg: #fee2e2;
+              --info-fg: #0369a1;
+              --info-bg: #e0f2fe;
+              --info-line: #bae6fd;
+            }
+            body { 
+              font-family: "Inter", sans-serif; 
+              padding: 40px;
+              color: var(--ink-2); 
+              font-size: 14px; 
+              background: #fff;
+              line-height: 1.5;
+            }
+            h1 { font-size: 20px; font-weight: 700; color: var(--ink); margin: 0 0 4px 0; letter-spacing: -0.2px; }
+            .subtitulo { color: var(--ink-3); margin-bottom: 24px; font-size: 14px; }
+            
+            .clinical-banner {
+              background: var(--row-head);
+              border: 1px solid var(--line);
+              border-radius: 4px;
+              padding: 16px 24px;
+              margin-bottom: 24px;
+              display: flex;
+              align-items: center;
+              justify-content: space-between;
+              width: 100%;
+              box-sizing: border-box;
+            }
+            .cb-main { display: flex; align-items: center; gap: 16px; }
+            .cb-avatar {
+              width: 48px; height: 48px; background: var(--line); color: var(--ink);
+              border-radius: 4px; display: flex; align-items: center; justify-content: center;
+              font-size: 20px; font-weight: 600; border: 1px solid var(--line-soft);
+            }
+            .cb-info { display: flex; flex-direction: column; }
+            .cb-name { font-size: 16px; font-weight: 700; color: var(--ink); letter-spacing: -0.2px; }
+            .cb-id { font-family: monospace; font-size: 14px; color: var(--ink-3); font-weight: 500; }
+            
+            .cb-meta { display: flex; gap: 24px; }
+            .cb-meta-item { display: flex; flex-direction: column; text-align: right; }
+            .cb-meta-label { font-size: 12px; text-transform: uppercase; color: var(--ink-3); font-weight: 600; letter-spacing: 0.5px; }
+            .cb-meta-value { font-size: 14px; font-weight: 600; color: var(--ink); font-variant-numeric: tabular-nums; }
+            
             table { width: 100%; border-collapse: collapse; margin-top: 16px; }
-            th { background: #1a56db; color: white; padding: 8px 12px;
-                 text-align: left; font-size: 12px; }
-            td { padding: 8px 12px; border-bottom: 1px solid #e5e7eb;
-                 font-size: 12px; }
-            tr:nth-child(even) td { background: #f8fafc; }
-            .badge { display: inline-block; padding: 2px 8px;
-                     border-radius: 4px; font-size: 11px; }
-            .orig { background: #d1fae5; color: #065f46; }
-            .ret { background: #fee2e2; color: #991b1b; }
-            .rodape { margin-top: 32px; font-size: 11px; color: #888;
-                      border-top: 1px solid #e5e7eb; padding-top: 12px;
-                      display: flex; justify-content: space-between; }
+            th { 
+              background: var(--row-head); color: var(--ink-3); padding: 8px 24px;
+              text-align: left; font-size: 12px; font-weight: 600; text-transform: uppercase; 
+              letter-spacing: 0.5px; border-bottom: 1px solid var(--line); white-space: nowrap;
+            }
+            td { padding: 12px 24px; border-bottom: 1px solid var(--line-soft); color: var(--ink-2); vertical-align: middle; }
+            tr:nth-child(even) td { background: var(--row-zebra); }
+            
+            .status {
+              display: inline-flex; align-items: center; gap: 6px; font-size: 12px; 
+              font-weight: 500; border-radius: 12px; padding: 2px 10px;
+            }
+            .status::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: currentColor; flex: none; }
+            .status--orig { color: var(--ok-fg); background: var(--ok-bg); }
+            .status--ret { color: var(--danger-fg); background: var(--danger-bg); }
+            
+            .id-ref { font-family: monospace; font-size: 12px; color: var(--ink-3); background: var(--line-soft); padding: 2px 6px; border-radius: 4px; }
+            .tag { 
+              display: inline-block; font-size: 11px; font-weight: 600; color: var(--info-fg); 
+              background: var(--info-bg); border: 1px solid var(--info-line); 
+              border-radius: 12px; padding: 2px 10px; white-space: nowrap; 
+            }
+            
+            .btn-print {
+              padding: 10px 24px; background: var(--accent); color: white;
+              border: 1px solid var(--accent); border-radius: 4px; cursor: pointer;
+              font-size: 14px; font-weight: 600; transition: 0.2s;
+            }
+            
+            .rodape { 
+              margin-top: 40px; font-size: 12px; color: var(--ink-3);
+              border-top: 1px solid var(--line); padding-top: 16px;
+              display: flex; justify-content: space-between; 
+            }
+            
             @media print {
               .no-print { display: none !important; }
+              body { padding: 0; }
+              .clinical-banner { border: none; padding: 0 0 16px 0; border-bottom: 2px solid var(--line); border-radius: 0; background: #fff; }
+              th { background: #fff !important; border-bottom: 2px solid var(--line); }
             }
           </style>
         </head>
@@ -131,31 +204,31 @@ function PaginaInicial() {
                 Sistema de Saúde Integrado · Projeto Integrador 2026
               </div>
             </div>
-            <button class="no-print" onclick="window.print()"
-              style="padding: 10px 24px; background: #1a56db; color: white;
-                     border: none; border-radius: 6px; cursor: pointer;
-                     font-size: 14px; font-weight: bold;">
-              🖨️ Imprimir / Salvar PDF
+            <button class="no-print btn-print" onclick="window.print()">
+              Imprimir / Salvar PDF
             </button>
           </div>
-          <div class="info-linha">
-            <div class="info-item">
-              <label>PACIENTE</label>
-              <span>#${resultado.prontuario.paciente_id}</span>
+          
+          <div class="clinical-banner">
+            <div class="cb-main">
+              <div class="cb-avatar">P</div>
+              <div class="cb-info">
+                <div class="cb-name">Paciente #${resultado.prontuario.paciente_id}</div>
+                <div class="cb-id">Prontuário #${resultado.prontuario.id}</div>
+              </div>
             </div>
-            <div class="info-item">
-              <label>PRONTUÁRIO</label>
-              <span>#${resultado.prontuario.id}</span>
-            </div>
-            <div class="info-item">
-              <label>ABERTO EM</label>
-              <span>${new Date(resultado.prontuario.data_criacao).toLocaleString('pt-BR')}</span>
-            </div>
-            <div class="info-item">
-              <label>TOTAL DE REGISTROS</label>
-              <span>${resultado.registros.length}</span>
+            <div class="cb-meta">
+              <div class="cb-meta-item">
+                <span class="cb-meta-label">Aberto em</span>
+                <span class="cb-meta-value">${new Date(resultado.prontuario.data_criacao).toLocaleString('pt-BR')}</span>
+              </div>
+              <div class="cb-meta-item">
+                <span class="cb-meta-label">Total de Registros</span>
+                <span class="cb-meta-value">${resultado.registros.length}</span>
+              </div>
             </div>
           </div>
+
           <table>
             <thead>
               <tr>
@@ -171,13 +244,13 @@ function PaginaInicial() {
             <tbody>
               ${resultado.registros.map(r => `
                 <tr>
-                  <td>#${r.id}</td>
+                  <td><span class="id-ref">#${r.id}</span></td>
                   <td>${new Date(r.data_registro).toLocaleString('pt-BR')}</td>
-                  <td>${descricaoTipo(r.tipo_registro_id)}</td>
-                  <td>#${r.medico_id}</td>
+                  <td><span class="tag">${descricaoTipo(r.tipo_registro_id)}</span></td>
+                  <td><span class="id-ref">#${r.medico_id}</span></td>
                   <td>${r.diagnostico || '-'}</td>
                   <td>${r.sintomas || '-'}</td>
-                  <td><span class="badge ${r.retificado ? 'ret' : 'orig'}">
+                  <td><span class="status ${r.retificado ? 'status--ret' : 'status--orig'}">
                     ${r.retificado ? 'Retificado' : 'Original'}
                   </span></td>
                 </tr>
@@ -193,7 +266,6 @@ function PaginaInicial() {
       `);
         janela.document.close();
         janela.focus();
-        // Sem print automático, usuário imprime pelo botão, mais confiável entre navegadores
     };
 
     return (
@@ -318,7 +390,7 @@ function PaginaInicial() {
                                         <th>Diagnóstico</th>
                                         <th>Sintomas</th>
                                         <th style={{ width: 110 }}>Situação</th>
-                                        <th className="col-r" style={{ width: 100 }}>Ação</th>
+                                        <th style={{ width: 100 }}>Ação</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -335,13 +407,15 @@ function PaginaInicial() {
                                                     ? <span className="status status--ret">Retificado</span>
                                                     : <span className="status status--orig">Original</span>}
                                             </td>
-                                            <td className="col-r">
-                                                <button className="btn--link" onClick={() => setRegistroModal(r)}>
-                                                    Visualizar
-                                                </button>
-                                                <button className="btn--link" onClick={() => navigate(`/retificacao/${r.id}`)}>
-                                                    Retificar
-                                                </button>
+                                            <td>
+                                                <div style={{ display: 'flex', gap: '8px', justifyContent: 'flex-start' }}>
+                                                    <button className="btn btn--sm btn--default" onClick={() => setRegistroModal(r)} title="Visualizar">
+                                                        <i className="bi bi-eye"></i>
+                                                    </button>
+                                                    <button className="btn btn--sm btn--default" onClick={() => navigate(`/retificacao/${r.id}`)} title="Retificar">
+                                                        <i className="bi bi-pencil-square"></i>
+                                                    </button>
+                                                </div>
                                             </td>
                                         </tr>
                                     ))}
