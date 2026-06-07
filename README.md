@@ -50,7 +50,7 @@ um sistema só.
 
 ```text
 Prontuario/
-├── back/                                 API REST (porta 3005)
+├── back/                                  API REST (porta 3005)
 │   ├── controllers/
 │   │   ├── ProntuarioController.js        busca prontuário por paciente ou id
 │   │   ├── RegistroClinicoController.js   cria e lista registros clínicos
