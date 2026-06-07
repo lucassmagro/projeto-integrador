@@ -31,7 +31,10 @@ api.get("/registro-clinico/:id", registroClinico.selecionar);
 api.post("/registro-clinico", registroClinico.inserir);
 // Sem PUT/DELETE, registros são imutáveis, correção via POST /retificacao
 
-api.get("/retificacao/registro/:registro_clinico_id", retificacao.listarPorRegistro);
+api.get(
+  "/retificacao/registro/:registro_clinico_id",
+  retificacao.listarPorRegistro,
+);
 api.post("/retificacao", retificacao.inserir);
 
 api.listen(3005, () => {

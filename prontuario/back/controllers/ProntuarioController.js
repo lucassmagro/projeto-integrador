@@ -14,17 +14,17 @@ async function buscarPorPaciente(req, res) {
       {
         replacements: { paciente_id: Number(paciente_id) },
         type: QueryTypes.SELECT,
-      }
+      },
     );
 
     if (registros.length > 0) {
       // View devolve registro_id/tipo_registro, frontend espera id/tipo_registro_id
       const tipos = await banco.query(
         `SELECT id, descricao FROM sistema.tipo_registro`,
-        { type: QueryTypes.SELECT }
+        { type: QueryTypes.SELECT },
       );
       const idPorDescricao = Object.fromEntries(
-        tipos.map((t) => [t.descricao, t.id])
+        tipos.map((t) => [t.descricao, t.id]),
       );
 
       const registrosMapeados = registros.map((r) => ({

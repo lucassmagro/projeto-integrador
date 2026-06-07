@@ -43,7 +43,7 @@ async function inserir(req, res) {
       {
         replacements: { id: Number(tipo_registro_id) },
         type: QueryTypes.SELECT,
-      }
+      },
     );
     if (!tipoValido.length) {
       return res.status(422).json({ mensagem: "Tipo de registro inválido." });
@@ -65,7 +65,7 @@ async function inserir(req, res) {
           p_sintomas: sintomas || null,
           p_observacoes: observacoes || null,
         },
-      }
+      },
     );
 
     return res

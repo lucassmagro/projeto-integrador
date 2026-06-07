@@ -18,16 +18,27 @@ async function listarPorRegistro(req, res) {
 }
 
 async function inserir(req, res) {
-  const { registro_clinico_id, medico_id, motivo_retificacao, conteudo_anterior, conteudo_novo } = req.body;
+  const {
+    registro_clinico_id,
+    medico_id,
+    motivo_retificacao,
+    conteudo_anterior,
+    conteudo_novo,
+  } = req.body;
 
   try {
-    const registroOriginal = await RegistroClinico.findByPk(registro_clinico_id);
+    const registroOriginal =
+      await RegistroClinico.findByPk(registro_clinico_id);
     if (!registroOriginal) {
-      return res.status(404).json({ mensagem: "Registro clínico original não encontrado." });
+      return res
+        .status(404)
+        .json({ mensagem: "Registro clínico original não encontrado." });
     }
 
     if (registroOriginal.retificado) {
-      return res.status(422).json({ mensagem: "Este registro já foi retificado." });
+      return res
+        .status(422)
+        .json({ mensagem: "Este registro já foi retificado." });
     }
 
     const retificacao = await RetificacaoRegistro.create({
@@ -40,7 +51,7 @@ async function inserir(req, res) {
 
     await banco.query(
       "UPDATE sistema.registro_clinico SET retificado = true WHERE id = :id",
-      { replacements: { id: registro_clinico_id } }
+      { replacements: { id: registro_clinico_id } },
     );
 
     return res.status(201).json(retificacao);
