@@ -50,12 +50,6 @@ const fluxo = [
 
 const integracoes = [
   {
-    grupo: "G2",
-    modulo: "Médicos",
-    relacao: "Consome",
-    dado: "Identificação do médico responsável pelo registro",
-  },
-  {
     grupo: "G4",
     modulo: "Consultas",
     relacao: "Consome",
@@ -129,7 +123,6 @@ function SectionHead({ title, sub }) {
 function LandingPage() {
   return (
     <div className="main-container">
-      {/* Cabeçalho documental do módulo */}
       <div className="doc-masthead">
         <div className="doc-eyebrow">Módulo G5 · Documentação operacional</div>
         <h1 className="doc-title">Prontuário Eletrônico</h1>
@@ -165,7 +158,6 @@ function LandingPage() {
         </div>
       </div>
 
-      {/* Sobre o módulo */}
       <section className="panel">
         <SectionHead
           title="Sobre o módulo"
@@ -191,8 +183,8 @@ function LandingPage() {
             <div className="dl-row">
               <dt>Papel no sistema</dt>
               <dd>
-                Recebe dados de consulta (G4) e médico (G2) e fornece o
-                histórico clínico aos módulos de Receitas (G6), Exames (G7) e
+                Recebe dados de consulta do módulo G4 e fornece o histórico
+                clínico aos módulos de Receitas (G6), Exames (G7) e
                 Telemedicina (G12).
               </dd>
             </div>
@@ -207,7 +199,6 @@ function LandingPage() {
         </div>
       </section>
 
-      {/* Funcionalidades */}
       <section className="panel">
         <SectionHead
           title="Funcionalidades"
@@ -239,7 +230,6 @@ function LandingPage() {
         </div>
       </section>
 
-      {/* Fluxo operacional */}
       <section className="panel">
         <SectionHead
           title="Fluxo operacional"
@@ -299,7 +289,6 @@ function LandingPage() {
         </div>
       </section>
 
-      {/* Integrações */}
       <section className="panel">
         <SectionHead
           title="Integrações"
@@ -353,7 +342,6 @@ function LandingPage() {
         </div>
       </section>
 
-      {/* Endpoints da API */}
       <section className="panel">
         <SectionHead
           title="Endpoints da API"
@@ -400,7 +388,6 @@ function LandingPage() {
         </div>
       </section>
 
-      {/* Projeto Integrador */}
       <section className="panel">
         <SectionHead
           title="Projeto Integrador"
@@ -432,7 +419,6 @@ function LandingPage() {
         </div>
       </section>
 
-      {/* Repositório */}
       <section className="panel">
         <SectionHead title="Repositório" sub="Código-fonte no GitHub" />
         <div className="panel-body">

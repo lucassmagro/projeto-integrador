@@ -448,6 +448,7 @@ a:hover {
   display: grid;
   grid-template-columns: 35% 1fr;
   gap: 32px;
+  align-items: stretch;
 }
 .history-col {
   /* position: sticky removed se grid faz o layout certinho, 
@@ -455,6 +456,13 @@ a:hover {
 }
 .form-col {
   /* Largura 100% garantida pela grid 1fr */
+}
+/* Colunas como flex para que os fieldsets preencham a mesma altura,
+   alinhando as bordas do histórico e do formulário. */
+.history-col,
+.form-col {
+  display: flex;
+  flex-direction: column;
 }
 .history-timeline {
   display: flex;
@@ -1050,3 +1058,4 @@ a:hover {
     width: 100%;
   }
 }
+

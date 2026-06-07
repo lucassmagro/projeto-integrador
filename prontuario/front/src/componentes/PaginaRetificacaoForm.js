@@ -77,7 +77,6 @@ function PaginaRetificacaoForm() {
                 </div>
 
                 <div className="panel-body panel-body--flush">
-                    {/* Registro de referência (Clinical Banner) */}
                     {registro && (
                         <div className="clinical-banner" style={{ border: 'none', borderBottom: '1px solid var(--line)', borderRadius: 0, marginBottom: 0 }}>
                             <div className="cb-main">
@@ -151,7 +150,6 @@ function PaginaRetificacaoForm() {
                 </div>
             </section>
 
-            {/* Histórico de retificações anteriores */}
             {retificacoes.length > 0 && (
                 <section className="panel">
                     <div className="panel-head">
