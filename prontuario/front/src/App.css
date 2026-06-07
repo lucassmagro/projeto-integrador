@@ -6,7 +6,7 @@
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
 
 :root {
-  /* Cores (Light Mode Premium) */
+  /* Cores (Light Mode ) */
   --bg: #f8fafc;
   --surface: #ffffff;
 
@@ -127,7 +127,7 @@ a:hover {
   color: var(--accent-strong);
 }
 
-/* ── Shell ─────────────────────────────────────────────── */
+/*  Shell  */
 .app-wrapper {
   display: flex;
   flex-direction: column;
@@ -148,7 +148,7 @@ a:hover {
   padding: 0 28px;
 }
 
-/* ── Cabeçalho institucional ───────────────────────────── */
+/*  Cabeçalho institucional  */
 .topbar {
   background: var(--chrome-top);
   border-bottom: 1px solid var(--chrome-line);
@@ -299,7 +299,7 @@ a:hover {
   font-weight: 600;
 }
 
-/* ── Rodapé ────────────────────────────────────────────── */
+/*  Rodapé  */
 .footer {
   background: var(--surface);
   color: var(--ink-3);
@@ -324,7 +324,7 @@ a:hover {
   color: var(--ink-3);
 }
 
-/* ── Painel (Cards Premium) ────────────────────────────── */
+/*  Painel (Cards )  */
 .panel {
   background: var(--surface);
   border: 1px solid var(--line);
@@ -359,7 +359,7 @@ a:hover {
   padding: 0;
 }
 
-/* ── Banner Clínico (Patient Header) ───────────────────── */
+/*  Banner Clínico (Patient Header)  */
 .clinical-banner {
   background: var(--row-head);
   border: 1px solid var(--line);
@@ -428,7 +428,7 @@ a:hover {
   font-variant-numeric: tabular-nums;
 }
 
-/* ── Layout Vertical Padronizado ───────────────────────── */
+/*  Layout Vertical Padronizado  */
 .main-container {
   width: 100%;
   max-width: 1240px;
@@ -443,19 +443,12 @@ a:hover {
   width: 100%;
 }
 
-/* ── Master-Detail Layout ──────────────────────────────── */
+/*  Master-Detail Layout  */
 .split-layout {
   display: grid;
   grid-template-columns: 35% 1fr;
   gap: 32px;
   align-items: stretch;
-}
-.history-col {
-  /* position: sticky removed se grid faz o layout certinho, 
-     mas manteremos se precisar flutuar o side. Na real vamos manter limpo. */
-}
-.form-col {
-  /* Largura 100% garantida pela grid 1fr */
 }
 /* Colunas como flex para que os fieldsets preencham a mesma altura,
    alinhando as bordas do histórico e do formulário. */
@@ -501,7 +494,7 @@ a:hover {
   color: var(--ink);
 }
 
-/* ── Tabelas de Alta Densidade ─────────────────────────── */
+/*  Tabelas de Alta Densidade  */
 .table-scroll {
   width: 100%;
   overflow-x: auto;
@@ -585,7 +578,7 @@ a:hover {
   color: var(--info-fg);
   background: var(--info-bg);
   border: 1px solid var(--info-line);
-  border-radius: 12px; /* Pílula premium */
+  border-radius: 12px; /* Pílula  */
   padding: 2px 10px;
   white-space: nowrap;
 }
@@ -617,7 +610,7 @@ a:hover {
   background: var(--danger-bg);
 }
 
-/* ── Botões ────────────────────────────────────────────── */
+/*  Botões  */
 .btn {
   display: inline-flex;
   align-items: center;
@@ -677,7 +670,7 @@ a:hover {
   color: var(--accent-strong);
 }
 
-/* ── Formulários (Clinical Clean) ──────────────────────── */
+/*  Formulários (Clinical Clean)  */
 .fieldset {
   border: 1px solid var(--line);
   border-radius: 4px;
@@ -778,7 +771,7 @@ a:hover {
   border-top: 1px solid var(--line-soft);
 }
 
-/* ── Avisos (Red alerts) ───────────────────────────────── */
+/*  Avisos (Red alerts)  */
 .notice {
   display: flex;
   align-items: flex-start;
@@ -862,7 +855,7 @@ a:hover {
   display: block;
 }
 
-/* ── Estado vazio ──────────────────────────────────────── */
+/*  Estado vazio  */
 .empty {
   text-align: center;
   padding: 60px 20px;
@@ -997,7 +990,7 @@ a:hover {
   color: var(--ink-2);
 }
 
-/* ── Responsivo ────────────────────────────────────────── */
+/*  Responsivo  */
 @media (max-width: 860px) {
   .split-layout {
     flex-direction: column;
