@@ -58,6 +58,46 @@
     "Liberation Mono", Menlo, monospace;
 }
 
+[data-theme="dark"] {
+  --bg: #0d1117;
+  --surface: #161b22;
+
+  --chrome-top: #010409;
+  --chrome: #0d1117;
+  --chrome-line: #30363d;
+
+  --accent: #58a6ff;
+  --accent-strong: #79c0ff;
+
+  --ink: #c9d1d9;
+  --ink-2: #8b949e;
+  --ink-3: #8b949e;
+
+  --field: #0d1117;
+  --line: #30363d;
+  --line-soft: #21262d;
+  --row-head: #161b22;
+  --row-zebra: #0d1117;
+  --row-hover: #21262d;
+
+  --ok-bg: #1a3424;
+  --ok-fg: #3fb950;
+  --ok-line: #2ea043;
+
+  --warn-bg: #342512;
+  --warn-fg: #d29922;
+  --warn-line: #bb8009;
+
+  --danger-bg: #3b1618;
+  --danger-fg: #f85149;
+  --danger-line: #da3633;
+
+  --info-bg: #102640;
+  --info-fg: #58a6ff;
+  --info-line: #1f6feb;
+}
+
+
 *,
 *::before,
 *::after {
@@ -321,8 +361,8 @@ a:hover {
 
 /* ── Banner Clínico (Patient Header) ───────────────────── */
 .clinical-banner {
-  background: #f8fafc;
-  border: 1px solid #e2e8f0;
+  background: var(--row-head);
+  border: 1px solid var(--line);
   border-radius: 4px;
   padding: 16px 24px;
   margin-bottom: 24px;
@@ -339,15 +379,15 @@ a:hover {
 .cb-avatar {
   width: 48px;
   height: 48px;
-  background: #e2e8f0;
-  color: #0f172a;
+  background: var(--line);
+  color: var(--ink);
   border-radius: 4px;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 20px;
   font-weight: 600;
-  border: 1px solid #cbd5e1;
+  border: 1px solid var(--line-soft);
 }
 .cb-info {
   display: flex;
@@ -356,13 +396,13 @@ a:hover {
 .cb-name {
   font-size: 16px;
   font-weight: 700;
-  color: #0f172a;
+  color: var(--ink);
   letter-spacing: -0.2px;
 }
 .cb-id {
   font-family: var(--font-mono);
   font-size: 14px;
-  color: #475569;
+  color: var(--ink-3);
   font-weight: 500;
 }
 .cb-meta {
@@ -377,14 +417,14 @@ a:hover {
 .cb-meta-label {
   font-size: 12px;
   text-transform: uppercase;
-  color: #475569;
+  color: var(--ink-3);
   font-weight: 600;
   letter-spacing: 0.5px;
 }
 .cb-meta-value {
   font-size: 14px;
   font-weight: 600;
-  color: #0f172a;
+  color: var(--ink);
   font-variant-numeric: tabular-nums;
 }
 
@@ -422,7 +462,7 @@ a:hover {
   gap: 16px;
 }
 .timeline-card {
-  background: #fff;
+  background: var(--surface);
   border: 1px solid var(--line);
   border-radius: var(--r);
   padding: 16px;
@@ -478,7 +518,7 @@ a:hover {
   text-transform: uppercase;
   letter-spacing: 0.5px;
   color: var(--ink-3);
-  background: #f8fafc;
+  background: var(--row-head);
   padding: 8px 24px;
   border-bottom: 1px solid var(--line);
   white-space: nowrap;
@@ -512,14 +552,14 @@ a:hover {
   white-space: nowrap;
 }
 .data-table .muted {
-  color: #94a3b8;
+  color: var(--ink-3);
 }
 
 .id-ref {
   font-family: var(--font-mono);
   font-size: 12px;
   color: var(--ink-3);
-  background: #f1f5f9;
+  background: var(--line-soft);
   padding: 2px 6px;
   border-radius: 4px;
 }
@@ -598,13 +638,13 @@ a:hover {
   background: var(--accent-strong);
 }
 .btn--default {
-  background: #ffffff;
+  background: var(--surface);
   color: var(--ink-2);
-  border-color: #cbd5e1;
+  border-color: var(--line);
 }
 .btn--default:hover:not(:disabled) {
-  background: #f8fafc;
-  border-color: #94a3b8;
+  background: var(--row-hover);
+  border-color: var(--ink-3);
   color: var(--ink);
 }
 .btn--sm {
@@ -622,7 +662,7 @@ a:hover {
   border-radius: 4px;
 }
 .btn--link:hover {
-  background: #f0f9ff;
+  background: rgba(2, 132, 199, 0.1);
   color: var(--accent-strong);
 }
 
@@ -632,7 +672,7 @@ a:hover {
   border-radius: 4px;
   padding: 24px;
   margin-bottom: 24px;
-  background: #ffffff;
+  background: var(--surface);
 }
 .legend {
   font-size: 12px;
@@ -677,7 +717,7 @@ a:hover {
   font-size: 14px;
   color: var(--ink);
   background: var(--field);
-  border: 1px solid #cbd5e1;
+  border: 1px solid var(--line);
   border-radius: 4px;
   padding: 8px 16px;
   width: 100%;
@@ -701,9 +741,9 @@ a:hover {
 .field-input:read-only,
 .field-textarea:read-only,
 .field-input[disabled] {
-  background: #f8fafc;
+  background: var(--row-head);
   color: var(--ink-3);
-  border-color: #e2e8f0;
+  border-color: var(--line);
 }
 .field-help {
   font-size: 12px;
@@ -758,14 +798,14 @@ a:hover {
   border: 1px solid var(--line);
   border-radius: var(--r);
   margin-bottom: 20px;
-  background: #fff;
+  background: var(--surface);
 }
 .record-block-head {
   display: flex;
   flex-wrap: wrap;
   gap: 8px 24px;
   align-items: center;
-  background: #f8fafc;
+  background: var(--row-head);
   border-bottom: 1px solid var(--line);
   padding: 12px 16px;
   font-size: 13px;
@@ -816,8 +856,8 @@ a:hover {
   text-align: center;
   padding: 60px 20px;
   color: var(--ink-3);
-  background: #f8fafc;
-  border: 1px dashed #cbd5e1;
+  background: var(--row-head);
+  border: 1px dashed var(--line);
   border-radius: var(--r);
 }
 .empty i {
@@ -842,11 +882,7 @@ a:hover {
   border: 1px solid var(--line);
   border-radius: var(--r);
   padding: 20px;
-  background: #f8fafc;
-}
-.repo i {
-  font-size: 32px;
-  color: var(--ink-3);
+  background: var(--row-head);
 }
 .repo .repo-url {
   font-family: var(--font-mono);
@@ -856,7 +892,7 @@ a:hover {
 
 /* Documentação Inicial Hub */
 .doc-masthead {
-  background: #ffffff;
+  background: var(--surface);
   border: 1px solid var(--line);
   border-radius: 4px;
   padding: 32px;

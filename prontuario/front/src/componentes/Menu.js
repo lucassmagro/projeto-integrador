@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 
 const NAV = [
@@ -49,7 +49,29 @@ function crumbsFor(pathname) {
 function Menu() {
   const location = useLocation();
   const [open, setOpen] = useState(false);
+  const [darkMode, setDarkMode] = useState(false);
   const crumbs = crumbsFor(location.pathname);
+
+  useEffect(() => {
+    const saved = localStorage.getItem("theme");
+    if (
+      saved === "dark" ||
+      (!saved && window.matchMedia("(prefers-color-scheme: dark)").matches)
+    ) {
+      setDarkMode(true);
+      document.documentElement.setAttribute("data-theme", "dark");
+    }
+  }, []);
+
+  const toggleTheme = () => {
+    const newTheme = !darkMode;
+    setDarkMode(newTheme);
+    document.documentElement.setAttribute(
+      "data-theme",
+      newTheme ? "dark" : "light"
+    );
+    localStorage.setItem("theme", newTheme ? "dark" : "light");
+  };
 
   return (
     <>
@@ -59,6 +81,23 @@ function Menu() {
           <span className="topbar-meta">
             <span>Projeto Integrador · Sistemas de Informação</span>
             <span className="env">AMBIENTE ACADÊMICO</span>
+            <button
+              onClick={toggleTheme}
+              style={{
+                background: "none",
+                border: "none",
+                color: "inherit",
+                cursor: "pointer",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                marginLeft: "8px",
+                fontSize: "14px"
+              }}
+              title="Alternar Tema"
+            >
+              <i className={`bi ${darkMode ? "bi-sun-fill" : "bi-moon-fill"}`}></i>
+            </button>
           </span>
         </div>
       </div>
