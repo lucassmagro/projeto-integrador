@@ -529,6 +529,9 @@ a:hover {
   color: var(--ink-2);
   vertical-align: middle;
 }
+.data-table tbody tr:nth-child(even) {
+  background: var(--row-zebra);
+}
 .data-table tbody tr:hover {
   background: var(--row-hover);
 }
