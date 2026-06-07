@@ -62,7 +62,7 @@ Prontuario/
 │   │   ├── RetificacaoRegistro.js
 │   │   └── TipoRegistro.js
 │   ├── migrations/
-│   │   └── fix_tipos.sql                  corrige os tipos de registro existentes
+│   │   └── fix_tipos.sql                 corrige os tipos de registro existentes
 │   ├── Banco.js                          conexão com o PostgreSQL
 │   ├── index.js                          rotas e inicialização da API
 │   └── scripts.sql                       cria tabelas, view, procedure e trigger
