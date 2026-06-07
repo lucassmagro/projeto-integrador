@@ -184,8 +184,8 @@ function LandingPage() {
               <dt>Papel no sistema</dt>
               <dd>
                 Recebe dados de consulta do módulo G4 e fornece o histórico
-                clínico aos módulos de Receitas (G6), Exames (G7) e
-                Telemedicina (G12).
+                clínico aos módulos de Receitas (G6), Exames (G7) e Telemedicina
+                (G12).
               </dd>
             </div>
           </dl>

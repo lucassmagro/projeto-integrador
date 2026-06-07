@@ -68,7 +68,7 @@ function Menu() {
     setDarkMode(newTheme);
     document.documentElement.setAttribute(
       "data-theme",
-      newTheme ? "dark" : "light"
+      newTheme ? "dark" : "light",
     );
     localStorage.setItem("theme", newTheme ? "dark" : "light");
   };
@@ -92,11 +92,13 @@ function Menu() {
                 alignItems: "center",
                 justifyContent: "center",
                 marginLeft: "8px",
-                fontSize: "14px"
+                fontSize: "14px",
               }}
               title="Alternar Tema"
             >
-              <i className={`bi ${darkMode ? "bi-sun-fill" : "bi-moon-fill"}`}></i>
+              <i
+                className={`bi ${darkMode ? "bi-sun-fill" : "bi-moon-fill"}`}
+              ></i>
             </button>
           </span>
         </div>

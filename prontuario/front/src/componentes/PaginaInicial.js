@@ -6,89 +6,89 @@ import { labelTipo } from "../utils/tipoRegistroLabels";
 
 // G1 indisponível, pacientes simulados localmente
 const PACIENTES_MOCK = [
-    { id: 1, nome: "João Silva" },
-    { id: 2, nome: "Maria Oliveira" },
-    { id: 3, nome: "Carlos Souza" },
-    { id: 4, nome: "Ana Santos" },
-    { id: 5, nome: "Pedro Almeida" },
-    { id: 6, nome: "Fernanda Lima" },
-    { id: 7, nome: "Roberto Costa" },
-    { id: 8, nome: "Juliana Pereira" },
-    { id: 9, nome: "Marcos Rodrigues" },
-    { id: 10, nome: "Patrícia Ferreira" },
+  { id: 1, nome: "João Silva" },
+  { id: 2, nome: "Maria Oliveira" },
+  { id: 3, nome: "Carlos Souza" },
+  { id: 4, nome: "Ana Santos" },
+  { id: 5, nome: "Pedro Almeida" },
+  { id: 6, nome: "Fernanda Lima" },
+  { id: 7, nome: "Roberto Costa" },
+  { id: 8, nome: "Juliana Pereira" },
+  { id: 9, nome: "Marcos Rodrigues" },
+  { id: 10, nome: "Patrícia Ferreira" },
 ];
 
 function PaginaInicial() {
-    const [pacienteId, setPacienteId] = useState("");
-    const [resultado, setResultado] = useState(null);
-    const [tipos, setTipos] = useState([]);
-    const [carregando, setCarregando] = useState(false);
-    const [registroModal, setRegistroModal] = useState(null);
-    const [sugestoes, setSugestoes] = useState([]);
-    const navigate = useNavigate();
+  const [pacienteId, setPacienteId] = useState("");
+  const [resultado, setResultado] = useState(null);
+  const [tipos, setTipos] = useState([]);
+  const [carregando, setCarregando] = useState(false);
+  const [registroModal, setRegistroModal] = useState(null);
+  const [sugestoes, setSugestoes] = useState([]);
+  const navigate = useNavigate();
 
-    useEffect(() => {
-        get("tipo-registro")
-            .then((dados) => setTipos(dados))
-            .catch(() => { });
-    }, []);
+  useEffect(() => {
+    get("tipo-registro")
+      .then((dados) => setTipos(dados))
+      .catch(() => {});
+  }, []);
 
-    const descricaoTipo = (id) =>
-        labelTipo(tipos.find((t) => String(t.id) === String(id))?.descricao || "-");
+  const descricaoTipo = (id) =>
+    labelTipo(tipos.find((t) => String(t.id) === String(id))?.descricao || "-");
 
-    const buscar = async () => {
-        if (!pacienteId) {
-            toast.warning("Informe o ID do paciente.");
-            return;
-        }
-        setCarregando(true);
-        try {
-            const dados = await get(`prontuario/paciente/${pacienteId}`);
-            setResultado(dados);
-        } catch (erro) {
-            if (erro.response && erro.response.status === 404) {
-                setResultado(null);
-                toast.info("Nenhum prontuário encontrado para este paciente.");
-            } else {
-                toast.error("Erro ao buscar prontuário: " + erro.message);
-            }
-        }
-        setCarregando(false);
-    };
+  const buscar = async () => {
+    if (!pacienteId) {
+      toast.warning("Informe o ID do paciente.");
+      return;
+    }
+    setCarregando(true);
+    try {
+      const dados = await get(`prontuario/paciente/${pacienteId}`);
+      setResultado(dados);
+    } catch (erro) {
+      if (erro.response && erro.response.status === 404) {
+        setResultado(null);
+        toast.info("Nenhum prontuário encontrado para este paciente.");
+      } else {
+        toast.error("Erro ao buscar prontuário: " + erro.message);
+      }
+    }
+    setCarregando(false);
+  };
 
-    const formatarData = (data) => {
-        if (!data) return "-";
-        return new Date(data).toLocaleString("pt-BR");
-    };
+  const formatarData = (data) => {
+    if (!data) return "-";
+    return new Date(data).toLocaleString("pt-BR");
+  };
 
-    const aoDigitar = (valor) => {
-        setPacienteId(valor);
-        const termo = valor.trim().toLowerCase();
-        if (!termo) {
-            setSugestoes([]);
-            return;
-        }
-        const ehNumero = /^\d+$/.test(termo);
-        const filtrados = PACIENTES_MOCK.filter((p) =>
-            ehNumero
-                ? String(p.id).startsWith(termo)
-                : p.nome.toLowerCase().includes(termo)
-        ).slice(0, 5);
-        setSugestoes(filtrados);
-    };
+  const aoDigitar = (valor) => {
+    setPacienteId(valor);
+    const termo = valor.trim().toLowerCase();
+    if (!termo) {
+      setSugestoes([]);
+      return;
+    }
+    const ehNumero = /^\d+$/.test(termo);
+    const filtrados = PACIENTES_MOCK.filter((p) =>
+      ehNumero
+        ? String(p.id).startsWith(termo)
+        : p.nome.toLowerCase().includes(termo),
+    ).slice(0, 5);
+    setSugestoes(filtrados);
+  };
 
-    const selecionarSugestao = (p) => {
-        setPacienteId(String(p.id));
-        setSugestoes([]);
-    };
+  const selecionarSugestao = (p) => {
+    setPacienteId(String(p.id));
+    setSugestoes([]);
+  };
 
-    const gerarPDF = () => {
-        const janela = window.open('', '_blank');
-        if (!janela) {
-            toast.error("Permita pop-ups para exportar o PDF.");
-            return;
-        }
-        janela.document.write(`
+  const gerarPDF = () => {
+    const janela = window.open("", "_blank");
+    if (!janela) {
+      toast.error("Permita pop-ups para exportar o PDF.");
+      return;
+    }
+    janela.document.write(`
         <!DOCTYPE html>
         <html>
         <head>
@@ -220,7 +220,7 @@ function PaginaInicial() {
             <div class="cb-meta">
               <div class="cb-meta-item">
                 <span class="cb-meta-label">Aberto em</span>
-                <span class="cb-meta-value">${new Date(resultado.prontuario.data_criacao).toLocaleString('pt-BR')}</span>
+                <span class="cb-meta-value">${new Date(resultado.prontuario.data_criacao).toLocaleString("pt-BR")}</span>
               </div>
               <div class="cb-meta-item">
                 <span class="cb-meta-label">Total de Registros</span>
@@ -242,226 +242,330 @@ function PaginaInicial() {
               </tr>
             </thead>
             <tbody>
-              ${resultado.registros.map(r => `
+              ${resultado.registros
+                .map(
+                  (r) => `
                 <tr>
                   <td><span class="id-ref">#${r.id}</span></td>
-                  <td>${new Date(r.data_registro).toLocaleString('pt-BR')}</td>
+                  <td>${new Date(r.data_registro).toLocaleString("pt-BR")}</td>
                   <td><span class="tag">${descricaoTipo(r.tipo_registro_id)}</span></td>
                   <td><span class="id-ref">#${r.medico_id}</span></td>
-                  <td>${r.diagnostico || '-'}</td>
-                  <td>${r.sintomas || '-'}</td>
-                  <td><span class="status ${r.retificado ? 'status--ret' : 'status--orig'}">
-                    ${r.retificado ? 'Retificado' : 'Original'}
+                  <td>${r.diagnostico || "-"}</td>
+                  <td>${r.sintomas || "-"}</td>
+                  <td><span class="status ${r.retificado ? "status--ret" : "status--orig"}">
+                    ${r.retificado ? "Retificado" : "Original"}
                   </span></td>
                 </tr>
-              `).join('')}
+              `,
+                )
+                .join("")}
             </tbody>
           </table>
           <div class="rodape">
             <span>G5 — Prontuário Eletrônico · UNOESC Chapecó</span>
-            <span>Gerado em: ${new Date().toLocaleString('pt-BR')}</span>
+            <span>Gerado em: ${new Date().toLocaleString("pt-BR")}</span>
           </div>
         </body>
         </html>
       `);
-        janela.document.close();
-        janela.focus();
-    };
+    janela.document.close();
+    janela.focus();
+  };
 
-    return (
-        <>
-            {/* Overflow visible para o dropdown não ser cortado pelo overflow hidden do .panel */}
-            <section className="panel" style={{ overflow: 'visible' }}>
-                <div className="panel-head">
-                    <div>
-                        <div className="panel-title">Consulta de Histórico Clínico</div>
-                        <div className="panel-sub">Informe o identificador do paciente para abrir o prontuário.</div>
-                    </div>
+  return (
+    <>
+      {/* Overflow visible para o dropdown não ser cortado pelo overflow hidden do .panel */}
+      <section className="panel" style={{ overflow: "visible" }}>
+        <div className="panel-head">
+          <div>
+            <div className="panel-title">Consulta de Histórico Clínico</div>
+            <div className="panel-sub">
+              Informe o identificador do paciente para abrir o prontuário.
+            </div>
+          </div>
+        </div>
+        <div className="panel-body">
+          <div className="toolbar">
+            <div className="field" style={{ position: "relative" }}>
+              <label className="field-label" htmlFor="pacienteId">
+                Paciente (nome ou ID)
+              </label>
+              <input
+                id="pacienteId"
+                type="text"
+                className="field-input"
+                placeholder="Ex.: João Silva ou 1"
+                value={pacienteId}
+                autoComplete="off"
+                onChange={(e) => aoDigitar(e.target.value)}
+                onKeyDown={(e) => e.key === "Enter" && buscar()}
+                onBlur={() => setTimeout(() => setSugestoes([]), 150)}
+              />
+              {sugestoes.length > 0 && (
+                <ul
+                  style={{
+                    listStyle: "none",
+                    margin: "4px 0 0",
+                    padding: "4px",
+                    position: "absolute",
+                    top: "100%",
+                    left: 0,
+                    right: 0,
+                    zIndex: 9999,
+                    background: "white",
+                    border: "1px solid var(--line)",
+                    borderRadius: "6px",
+                    boxShadow: "0 4px 12px rgba(0,0,0,0.12)",
+                    maxHeight: "200px",
+                    overflowY: "auto",
+                  }}
+                >
+                  {sugestoes.map((p) => (
+                    <li
+                      key={p.id}
+                      onClick={() => selecionarSugestao(p)}
+                      onMouseEnter={(e) =>
+                        (e.currentTarget.style.background =
+                          "var(--row-hover, #f1f5f9)")
+                      }
+                      onMouseLeave={(e) =>
+                        (e.currentTarget.style.background = "transparent")
+                      }
+                      style={{
+                        padding: "8px 12px",
+                        cursor: "pointer",
+                        borderRadius: "4px",
+                        fontSize: "14px",
+                        color: "#1a1a1a",
+                      }}
+                    >
+                      {p.nome} — ID: {p.id}
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+            <button
+              className="btn btn--primary"
+              onClick={buscar}
+              disabled={carregando}
+            >
+              {carregando ? (
+                <>
+                  <span className="spinner-border spinner-border-sm"></span>{" "}
+                  Buscando…
+                </>
+              ) : (
+                <>
+                  <i className="bi bi-search"></i> Buscar
+                </>
+              )}
+            </button>
+            <button
+              className="btn btn--default"
+              onClick={() => navigate("/registro")}
+            >
+              <i className="bi bi-file-earmark-plus"></i> Novo registro
+            </button>
+          </div>
+        </div>
+      </section>
+
+      {resultado && (
+        <section className="panel">
+          <div
+            className="clinical-banner"
+            style={{
+              border: "none",
+              borderBottom: "1px solid var(--line)",
+              borderRadius: 0,
+              marginBottom: 0,
+            }}
+          >
+            <div className="cb-main">
+              <div className="cb-avatar">P</div>
+              <div className="cb-info">
+                <div className="cb-name">
+                  Paciente #{resultado.prontuario.paciente_id}
                 </div>
-                <div className="panel-body">
-                    <div className="toolbar">
-                        <div className="field" style={{ position: 'relative' }}>
-                            <label className="field-label" htmlFor="pacienteId">Paciente (nome ou ID)</label>
-                            <input
-                                id="pacienteId"
-                                type="text"
-                                className="field-input"
-                                placeholder="Ex.: João Silva ou 1"
-                                value={pacienteId}
-                                autoComplete="off"
-                                onChange={(e) => aoDigitar(e.target.value)}
-                                onKeyDown={(e) => e.key === "Enter" && buscar()}
-                                onBlur={() => setTimeout(() => setSugestoes([]), 150)}
-                            />
-                            {sugestoes.length > 0 && (
-                                <ul
-                                    style={{
-                                        listStyle: 'none',
-                                        margin: '4px 0 0',
-                                        padding: '4px',
-                                        position: 'absolute',
-                                        top: '100%',
-                                        left: 0,
-                                        right: 0,
-                                        zIndex: 9999,
-                                        background: 'white',
-                                        border: '1px solid var(--line)',
-                                        borderRadius: '6px',
-                                        boxShadow: '0 4px 12px rgba(0,0,0,0.12)',
-                                        maxHeight: '200px',
-                                        overflowY: 'auto',
-                                    }}
-                                >
-                                    {sugestoes.map((p) => (
-                                        <li
-                                            key={p.id}
-                                            onClick={() => selecionarSugestao(p)}
-                                            onMouseEnter={(e) => (e.currentTarget.style.background = 'var(--row-hover, #f1f5f9)')}
-                                            onMouseLeave={(e) => (e.currentTarget.style.background = 'transparent')}
-                                            style={{
-                                                padding: '8px 12px',
-                                                cursor: 'pointer',
-                                                borderRadius: '4px',
-                                                fontSize: '14px',
-                                                color: '#1a1a1a',
-                                            }}
-                                        >
-                                            {p.nome} — ID: {p.id}
-                                        </li>
-                                    ))}
-                                </ul>
-                            )}
-                        </div>
-                        <button className="btn btn--primary" onClick={buscar} disabled={carregando}>
-                            {carregando
-                                ? <><span className="spinner-border spinner-border-sm"></span> Buscando…</>
-                                : <><i className="bi bi-search"></i> Buscar</>}
-                        </button>
-                        <button className="btn btn--default" onClick={() => navigate("/registro")}>
-                            <i className="bi bi-file-earmark-plus"></i> Novo registro
-                        </button>
-                    </div>
+                <div className="cb-id">
+                  Prontuário #{resultado.prontuario.id}
                 </div>
-            </section>
+              </div>
+            </div>
+            <div className="cb-meta">
+              <div className="cb-meta-item">
+                <span className="cb-meta-label">Aberto em</span>
+                <span className="cb-meta-value">
+                  {formatarData(resultado.prontuario.data_criacao)}
+                </span>
+              </div>
+              <div className="cb-meta-item">
+                <span className="cb-meta-label">Registros</span>
+                <span className="cb-meta-value">
+                  {resultado.registros.length}
+                </span>
+              </div>
+              <button className="btn btn--default" onClick={gerarPDF}>
+                <i className="bi bi-printer"></i> Exportar PDF
+              </button>
+            </div>
+          </div>
 
-            {resultado && (
-                <section className="panel">
-                    <div className="clinical-banner" style={{ border: 'none', borderBottom: '1px solid var(--line)', borderRadius: 0, marginBottom: 0 }}>
-                        <div className="cb-main">
-                            <div className="cb-avatar">P</div>
-                            <div className="cb-info">
-                                <div className="cb-name">Paciente #{resultado.prontuario.paciente_id}</div>
-                                <div className="cb-id">Prontuário #{resultado.prontuario.id}</div>
-                            </div>
+          {resultado.registros.length === 0 ? (
+            <div className="empty">
+              <i className="bi bi-clipboard-x"></i>
+              <strong>Nenhum registro clínico neste prontuário.</strong>
+              <span>Os registros aparecem aqui assim que forem gravados.</span>
+            </div>
+          ) : (
+            <div className="table-scroll">
+              <table className="data-table">
+                <caption style={{ padding: "12px 14px 8px" }}>
+                  Registros em ordem cronológica, mais recentes primeiro.
+                </caption>
+                <thead>
+                  <tr>
+                    <th style={{ width: 70 }}>Reg.</th>
+                    <th style={{ width: 160 }}>Data/hora</th>
+                    <th style={{ width: 200 }}>Tipo</th>
+                    <th style={{ width: 80 }}>Médico</th>
+                    <th>Diagnóstico</th>
+                    <th>Sintomas</th>
+                    <th style={{ width: 110 }}>Situação</th>
+                    <th style={{ width: 100 }}>Ação</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {resultado.registros.map((r) => (
+                    <tr key={r.id}>
+                      <td>
+                        <span className="id-ref">#{r.id}</span>
+                      </td>
+                      <td className="num">{formatarData(r.data_registro)}</td>
+                      <td>
+                        <span className="tag">
+                          {descricaoTipo(r.tipo_registro_id)}
+                        </span>
+                      </td>
+                      <td>
+                        <span className="id-ref">#{r.medico_id}</span>
+                      </td>
+                      <td>
+                        <span className="clip">{r.diagnostico || "-"}</span>
+                      </td>
+                      <td>
+                        <span className="clip">{r.sintomas || "-"}</span>
+                      </td>
+                      <td>
+                        {r.retificado ? (
+                          <span className="status status--ret">Retificado</span>
+                        ) : (
+                          <span className="status status--orig">Original</span>
+                        )}
+                      </td>
+                      <td>
+                        <div
+                          style={{
+                            display: "flex",
+                            gap: "8px",
+                            justifyContent: "flex-start",
+                          }}
+                        >
+                          <button
+                            className="btn btn--sm btn--default"
+                            onClick={() => setRegistroModal(r)}
+                            title="Visualizar"
+                          >
+                            <i className="bi bi-eye"></i>
+                          </button>
+                          <button
+                            className="btn btn--sm btn--default"
+                            onClick={() => navigate(`/retificacao/${r.id}`)}
+                            title="Retificar"
+                          >
+                            <i className="bi bi-pencil-square"></i>
+                          </button>
                         </div>
-                        <div className="cb-meta">
-                            <div className="cb-meta-item">
-                                <span className="cb-meta-label">Aberto em</span>
-                                <span className="cb-meta-value">{formatarData(resultado.prontuario.data_criacao)}</span>
-                            </div>
-                            <div className="cb-meta-item">
-                                <span className="cb-meta-label">Registros</span>
-                                <span className="cb-meta-value">{resultado.registros.length}</span>
-                            </div>
-                            <button className="btn btn--default" onClick={gerarPDF}>
-                                <i className="bi bi-printer"></i> Exportar PDF
-                            </button>
-                        </div>
-                    </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </section>
+      )}
 
-                    {resultado.registros.length === 0 ? (
-                        <div className="empty">
-                            <i className="bi bi-clipboard-x"></i>
-                            <strong>Nenhum registro clínico neste prontuário.</strong>
-                            <span>Os registros aparecem aqui assim que forem gravados.</span>
-                        </div>
-                    ) : (
-                        <div className="table-scroll">
-                            <table className="data-table">
-                                <caption style={{ padding: "12px 14px 8px" }}>
-                                    Registros em ordem cronológica, mais recentes primeiro.
-                                </caption>
-                                <thead>
-                                    <tr>
-                                        <th style={{ width: 70 }}>Reg.</th>
-                                        <th style={{ width: 160 }}>Data/hora</th>
-                                        <th style={{ width: 200 }}>Tipo</th>
-                                        <th style={{ width: 80 }}>Médico</th>
-                                        <th>Diagnóstico</th>
-                                        <th>Sintomas</th>
-                                        <th style={{ width: 110 }}>Situação</th>
-                                        <th style={{ width: 100 }}>Ação</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {resultado.registros.map((r) => (
-                                        <tr key={r.id}>
-                                            <td><span className="id-ref">#{r.id}</span></td>
-                                            <td className="num">{formatarData(r.data_registro)}</td>
-                                            <td><span className="tag">{descricaoTipo(r.tipo_registro_id)}</span></td>
-                                            <td><span className="id-ref">#{r.medico_id}</span></td>
-                                            <td><span className="clip">{r.diagnostico || "-"}</span></td>
-                                            <td><span className="clip">{r.sintomas || "-"}</span></td>
-                                            <td>
-                                                {r.retificado
-                                                    ? <span className="status status--ret">Retificado</span>
-                                                    : <span className="status status--orig">Original</span>}
-                                            </td>
-                                            <td>
-                                                <div style={{ display: 'flex', gap: '8px', justifyContent: 'flex-start' }}>
-                                                    <button className="btn btn--sm btn--default" onClick={() => setRegistroModal(r)} title="Visualizar">
-                                                        <i className="bi bi-eye"></i>
-                                                    </button>
-                                                    <button className="btn btn--sm btn--default" onClick={() => navigate(`/retificacao/${r.id}`)} title="Retificar">
-                                                        <i className="bi bi-pencil-square"></i>
-                                                    </button>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
-                        </div>
-                    )}
-                </section>
-            )}
-
-            {registroModal && (
-                <div className="modal fade show" style={{ display: 'block' }} tabIndex="-1">
-                    <div className="modal-dialog modal-lg" style={{ position: 'relative', zIndex: 1055 }}>
-                        <div className="modal-content">
-                            <div className="modal-header">
-                                <h5 className="modal-title">Registro #{registroModal.id}</h5>
-                                <button className="btn-close"
-                                    onClick={() => setRegistroModal(null)} />
-                            </div>
-                            <div className="modal-body">
-                                <p><strong>Tipo:</strong> {descricaoTipo(registroModal.tipo_registro_id)}</p>
-                                <p><strong>Data/Hora:</strong> {formatarData(registroModal.data_registro)}</p>
-                                <p><strong>Médico:</strong> #{registroModal.medico_id}</p>
-                                {registroModal.diagnostico &&
-                                    <p><strong>Diagnóstico:</strong> {registroModal.diagnostico}</p>}
-                                {registroModal.sintomas &&
-                                    <p><strong>Sintomas:</strong> {registroModal.sintomas}</p>}
-                                {registroModal.observacoes &&
-                                    <p><strong>Observações:</strong> {registroModal.observacoes}</p>}
-                                <p><strong>Situação:</strong>{" "}
-                                    {registroModal.retificado ? "Retificado" : "Original"}
-                                </p>
-                            </div>
-                            <div className="modal-footer">
-                                <button className="btn btn--default"
-                                    onClick={() => setRegistroModal(null)}>Fechar</button>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="modal-backdrop fade show"
-                        style={{ opacity: 0.3 }}
-                        onClick={() => setRegistroModal(null)} />
-                </div>
-            )}
-        </>
-    );
+      {registroModal && (
+        <div
+          className="modal fade show"
+          style={{ display: "block" }}
+          tabIndex="-1"
+        >
+          <div
+            className="modal-dialog modal-lg"
+            style={{ position: "relative", zIndex: 1055 }}
+          >
+            <div className="modal-content">
+              <div className="modal-header">
+                <h5 className="modal-title">Registro #{registroModal.id}</h5>
+                <button
+                  className="btn-close"
+                  onClick={() => setRegistroModal(null)}
+                />
+              </div>
+              <div className="modal-body">
+                <p>
+                  <strong>Tipo:</strong>{" "}
+                  {descricaoTipo(registroModal.tipo_registro_id)}
+                </p>
+                <p>
+                  <strong>Data/Hora:</strong>{" "}
+                  {formatarData(registroModal.data_registro)}
+                </p>
+                <p>
+                  <strong>Médico:</strong> #{registroModal.medico_id}
+                </p>
+                {registroModal.diagnostico && (
+                  <p>
+                    <strong>Diagnóstico:</strong> {registroModal.diagnostico}
+                  </p>
+                )}
+                {registroModal.sintomas && (
+                  <p>
+                    <strong>Sintomas:</strong> {registroModal.sintomas}
+                  </p>
+                )}
+                {registroModal.observacoes && (
+                  <p>
+                    <strong>Observações:</strong> {registroModal.observacoes}
+                  </p>
+                )}
+                <p>
+                  <strong>Situação:</strong>{" "}
+                  {registroModal.retificado ? "Retificado" : "Original"}
+                </p>
+              </div>
+              <div className="modal-footer">
+                <button
+                  className="btn btn--default"
+                  onClick={() => setRegistroModal(null)}
+                >
+                  Fechar
+                </button>
+              </div>
+            </div>
+          </div>
+          <div
+            className="modal-backdrop fade show"
+            style={{ opacity: 0.3 }}
+            onClick={() => setRegistroModal(null)}
+          />
+        </div>
+      )}
+    </>
+  );
 }
 
 export default PaginaInicial;
