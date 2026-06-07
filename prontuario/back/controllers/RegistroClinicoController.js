@@ -1,17 +1,6 @@
 import RegistroClinico from "../models/RegistroClinico.js";
-import Prontuario from "../models/Prontuario.js";
-import axios from "axios";
-
-const dadosconsulta = { id: 1, paciente_id: 1, medico_id: 1 };
-
-// Função que simula o fetch com 1 segundo de atraso (latência)
-export const buscaConsulta = () => {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve(dadosconsulta);
-    }, 1000); // dadosconsulta = 1 segundo
-  });
-};
+import banco from "../Banco.js";
+import { QueryTypes } from "sequelize";
 
 async function listar(req, res) {
   const dados = await RegistroClinico.findAll({
@@ -29,46 +18,63 @@ async function selecionar(req, res) {
   return res.json(dados);
 }
 
+// G4 indisponível, dados informados manualmente
 async function inserir(req, res) {
-  const { consulta_id, tipo_registro_id, diagnostico, sintomas, observacoes } =
-    req.body;
+  const {
+    consulta_id,
+    paciente_id,
+    medico_id,
+    tipo_registro_id,
+    diagnostico,
+    sintomas,
+    observacoes,
+  } = req.body;
+
+  if (!paciente_id || !consulta_id || !medico_id) {
+    return res.status(422).json({
+      mensagem: "paciente_id, consulta_id e medico_id são obrigatórios.",
+    });
+  }
 
   try {
-    const consulta = await buscaConsulta();
-
-    if (!consulta)
-      return res.status(422).json({
-        mensagem:
-          "Consulta inválida, não encontrada ou cancelada. Não é possível registrar.",
-      });
-
-    // Busca ou cria o prontuário do paciente
-    let prontuario = await Prontuario.findOne({
-      where: { paciente_id: consulta.paciente_id },
-    });
-
-    if (!prontuario) {
-      prontuario = await Prontuario.create({
-        paciente_id: consulta.paciente_id,
-      });
+    // Valida antes da SP para evitar erro genérico de FK
+    const tipoValido = await banco.query(
+      "SELECT id FROM sistema.tipo_registro WHERE id = :id",
+      {
+        replacements: { id: Number(tipo_registro_id) },
+        type: QueryTypes.SELECT,
+      }
+    );
+    if (!tipoValido.length) {
+      return res.status(422).json({ mensagem: "Tipo de registro inválido." });
     }
 
-    // Cria o registro clínico (imutável a partir deste momento)
-    const dados = await RegistroClinico.create({
-      prontuario_id: prontuario.id,
-      consulta_id,
-      medico_id: consulta.medico_id,
-      tipo_registro_id,
-      diagnostico,
-      sintomas,
-      observacoes,
-    });
+    // Cria via stored procedure, exigência de BD1
+    await banco.query(
+      `CALL sistema.sp_registrar_evolucao_clinica(
+        :p_paciente_id, :p_consulta_id, :p_medico_id,
+        :p_tipo_registro_id, :p_diagnostico, :p_sintomas, :p_observacoes
+      )`,
+      {
+        replacements: {
+          p_paciente_id: Number(paciente_id),
+          p_consulta_id: Number(consulta_id),
+          p_medico_id: Number(medico_id),
+          p_tipo_registro_id: Number(tipo_registro_id),
+          p_diagnostico: diagnostico || null,
+          p_sintomas: sintomas || null,
+          p_observacoes: observacoes || null,
+        },
+      }
+    );
 
-    return res.status(201).json(dados);
+    return res
+      .status(201)
+      .json({ mensagem: "Registro clínico criado com sucesso." });
   } catch (erro) {
     return res.status(422).json({
       mensagem:
-        "Não foi possível validar a consulta no módulo G4. Verifique o ID informado.",
+        "Erro ao criar registro clínico. Verifique os dados e tente novamente.",
     });
   }
 }

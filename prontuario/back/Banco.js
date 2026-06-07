@@ -9,6 +9,12 @@ const banco = new Sequelize("prontuario", "postgres", "postgres", {
     timestamps: false,
     freezeTableName: true,
   },
+  // Mantém o schema sistema no search_path para a SP e a view acharem as tabelas
+  hooks: {
+    afterConnect: async (connection) => {
+      await connection.query("SET search_path TO sistema, public;");
+    },
+  },
 });
 
 export default banco;

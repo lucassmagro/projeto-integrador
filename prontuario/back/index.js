@@ -21,20 +21,16 @@ api.get("/teste", (req, res) => {
   res.send("G5 - API Prontuário funcionando");
 });
 
-// Tipos de registro (lookup)
 api.get("/tipo-registro", tipoRegistro.listar);
 
-// Prontuário - busca por paciente (usado pelo front e por G6, G7, G12)
 api.get("/prontuario/paciente/:paciente_id", prontuario.buscarPorPaciente);
 api.get("/prontuario/:id", prontuario.buscarPorId);
 
-// Registro clínico
 api.get("/registro-clinico", registroClinico.listar);
 api.get("/registro-clinico/:id", registroClinico.selecionar);
 api.post("/registro-clinico", registroClinico.inserir);
-// PUT e DELETE são bloqueados intencionalmente (RF02 - imutabilidade)
+// Sem PUT/DELETE, registros são imutáveis, correção via POST /retificacao
 
-// Retificações
 api.get("/retificacao/registro/:registro_clinico_id", retificacao.listarPorRegistro);
 api.post("/retificacao", retificacao.inserir);
 

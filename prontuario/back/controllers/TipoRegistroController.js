@@ -1,12 +1,8 @@
-const TIPOS = [
-  { id: 1, descricao: "EVOLUCAO_MEDICA" },
-  { id: 2, descricao: "EVOLUCAO_ENFERMAGEM" },
-  { id: 3, descricao: "ANAMNESE" },
-  { id: 4, descricao: "OBSERVACAO_ENFERMAGEM" },
-];
+import TipoRegistro from "../models/TipoRegistro.js";
 
-function listar(req, res) {
-  return res.json(TIPOS);
+async function listar(req, res) {
+  const dados = await TipoRegistro.findAll({ order: [["id", "ASC"]] });
+  return res.json(dados);
 }
 
 export default { listar };
