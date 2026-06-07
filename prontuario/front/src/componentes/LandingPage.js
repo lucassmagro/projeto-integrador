@@ -142,7 +142,7 @@ function LandingPage() {
         <div className="doc-meta">
           <div className="m">
             <div className="m-k">Versão</div>
-            <div className="m-v">0.1.0</div>
+            <div className="m-v">1.0</div>
           </div>
           <div className="m">
             <div className="m-k">Ambiente</div>
@@ -258,8 +258,8 @@ function LandingPage() {
               <div
                 key={p.passo}
                 style={{
-                  background: "#F8FAFC",
-                  border: "1px solid #E2E8F0",
+                  background: "var(--row-head)",
+                  border: "1px solid var(--line)",
                   padding: "16px",
                   borderRadius: "6px",
                 }}
