@@ -16,7 +16,7 @@ const RetificacaoRegistro = banco.define(
     },
     medico_id: {
       type: DataTypes.BIGINT,
-      allowNull: false,
+      allowNull: true,
     },
     motivo_retificacao: {
       type: DataTypes.TEXT,

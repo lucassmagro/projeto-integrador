@@ -1,6 +1,18 @@
 import RegistroClinico from "../models/RegistroClinico.js";
+import TipoRegistro from "../models/TipoRegistro.js";
 import banco from "../Banco.js";
 import { QueryTypes } from "sequelize";
+import Prontuario from "../models/Prontuario.js";
+import dotenv from 'dotenv';
+
+dotenv.config({
+    path: './.env',
+    debug: 'development'
+});
+
+const url_g4 = process.env.API_G4
+const token_g4 = process.env.TOKEN_G4;
+
 
 async function listar(req, res) {
   const dados = await RegistroClinico.findAll({
@@ -18,60 +30,83 @@ async function selecionar(req, res) {
   return res.json(dados);
 }
 
+//busca demais dados da consulta na api do g4
+async function getConsultas(id) {
+  try {
+    const response = await fetch(url_g4 + `consultations/${id}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `ApiKey ${token_g4}`
+      }
+    });
+
+    if (!response.ok) {
+      throw new Error(`Server responded with status: ${response.status}`);
+    }
+    const result = await response.json();
+    return result
+  } catch (error) {
+    throw error;
+  }
+}
+
 // G4 indisponível, dados informados manualmente
 async function inserir(req, res) {
   const {
     consulta_id,
-    paciente_id,
-    medico_id,
     tipo_registro_id,
     diagnostico,
     sintomas,
     observacoes,
   } = req.body;
 
-  if (!paciente_id || !consulta_id || !medico_id) {
+  if (!consulta_id) {
     return res.status(422).json({
-      mensagem: "paciente_id, consulta_id e medico_id são obrigatórios.",
+      mensagem: "A consulta é obrigatória.",
     });
   }
 
   try {
-    // Valida antes da SP para evitar erro genérico de FK
-    const tipoValido = await banco.query(
-      "SELECT id FROM sistema.tipo_registro WHERE id = :id",
-      {
-        replacements: { id: Number(tipo_registro_id) },
-        type: QueryTypes.SELECT,
-      },
-    );
-    if (!tipoValido.length) {
-      return res.status(422).json({ mensagem: "Tipo de registro inválido." });
-    }
 
-    // Cria via stored procedure, exigência de BD1
-    await banco.query(
-      `CALL sistema.sp_registrar_evolucao_clinica(
-        :p_paciente_id, :p_consulta_id, :p_medico_id,
-        :p_tipo_registro_id, :p_diagnostico, :p_sintomas, :p_observacoes
-      )`,
-      {
-        replacements: {
-          p_paciente_id: Number(paciente_id),
-          p_consulta_id: Number(consulta_id),
-          p_medico_id: Number(medico_id),
-          p_tipo_registro_id: Number(tipo_registro_id),
-          p_diagnostico: diagnostico || null,
-          p_sintomas: sintomas || null,
-          p_observacoes: observacoes || null,
-        },
-      },
-    );
+    const dados_consulta = await getConsultas(consulta_id)
+
+    if (!dados_consulta) return res.status(400).json({
+      mensagem: "Consulta não encontrada! verifique e tente novamente",
+    });
+
+    const tipo_registro = await TipoRegistro.findByPk(tipo_registro_id)
+
+    if (!tipo_registro) return res.status(400).json({
+      mensagem: "Tipo de registro não encontrado! verifique e tente novamente",
+    });
+
+    let prontuario_id;
+
+    //busca com base no paciente id que vem da consulta (api externa)
+    const prontuario = await Prontuario.findOne({ where: { paciente_id: dados_consulta.data.patientId } })
+    if (!prontuario) {
+      const novo_prontuario = await Prontuario.create({
+        paciente_id: dados_consulta.data.patientId
+      })
+      prontuario_id = novo_prontuario.id
+    }
+    prontuario_id = prontuario.id;
+
+    const registro = await RegistroClinico.create({
+      prontuario_id: prontuario_id,
+      consulta_id: consulta_id,
+      tipo_registro_id: tipo_registro.id,
+      diagnostico:diagnostico,
+      sintomas: sintomas,
+      observacoes: observacoes,
+      retificado: false
+    })
 
     return res
       .status(201)
       .json({ mensagem: "Registro clínico criado com sucesso." });
-  } catch (erro) {
+  } catch (error) {
     return res.status(422).json({
       mensagem:
         "Erro ao criar registro clínico. Verifique os dados e tente novamente.",

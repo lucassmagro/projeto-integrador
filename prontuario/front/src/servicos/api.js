@@ -9,7 +9,6 @@ export const get = async (rota) => {
     const resposta = await api.get(rota);
     return resposta.data;
   } catch (erro) {
-    console.log(erro);
     throw erro;
   }
 };

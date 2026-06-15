@@ -15,12 +15,12 @@ const RegistroClinico = banco.define(
       allowNull: false,
     },
     consulta_id: {
-      type: DataTypes.BIGINT,
+      type: DataTypes.UUID,
       allowNull: false,
     },
     medico_id: {
       type: DataTypes.BIGINT,
-      allowNull: false,
+      allowNull: true,
     },
     tipo_registro_id: {
       type: DataTypes.INTEGER,

@@ -11,7 +11,6 @@ function PaginaRetificacaoForm() {
   const [carregando, setCarregando] = useState(false);
 
   const [form, setForm] = useState({
-    medico_id: "",
     motivo_retificacao: "",
     conteudo_anterior: "",
     conteudo_novo: "",
@@ -22,7 +21,7 @@ function PaginaRetificacaoForm() {
       try {
         const reg = await get(`registro-clinico/${registro_id}`);
         setRegistro(reg);
-        setForm((f) => ({ ...f, conteudo_anterior: reg.diagnostico }));
+        setForm((f) => ({ ...f, conteudo_anterior: reg.diagnostico + reg.sintomas }));
 
         const rets = await get(`retificacao/registro/${registro_id}`);
         setRetificacoes(rets);
@@ -39,7 +38,6 @@ function PaginaRetificacaoForm() {
 
   const salvar = async () => {
     if (
-      !form.medico_id ||
       !form.motivo_retificacao ||
       !form.conteudo_anterior ||
       !form.conteudo_novo
@@ -52,7 +50,6 @@ function PaginaRetificacaoForm() {
     try {
       await post("retificacao", {
         registro_clinico_id: Number(registro_id),
-        medico_id: Number(form.medico_id),
         motivo_retificacao: form.motivo_retificacao,
         conteudo_anterior: form.conteudo_anterior,
         conteudo_novo: form.conteudo_novo,
@@ -115,7 +112,7 @@ function PaginaRetificacaoForm() {
                 </div>
                 <div className="cb-meta-item">
                   <span className="cb-meta-label">Médico</span>
-                  <span className="cb-meta-value">#{registro.medico_id}</span>
+                  {/* <span className="cb-meta-value">#{registro.medico_id}</span> */}
                 </div>
               </div>
             </div>
@@ -136,20 +133,6 @@ function PaginaRetificacaoForm() {
             <fieldset className="fieldset">
               <legend className="legend">Dados da retificação</legend>
               <div className="form-grid">
-                <div className="field field--narrow">
-                  <label className="field-label" htmlFor="medico_id">
-                    ID do médico responsável<span className="req">*</span>
-                  </label>
-                  <input
-                    id="medico_id"
-                    type="number"
-                    name="medico_id"
-                    className="field-input"
-                    value={form.medico_id}
-                    onChange={handleChange}
-                    placeholder="Ex.: 3"
-                  />
-                </div>
                 <div className="field">
                   <label className="field-label" htmlFor="motivo_retificacao">
                     Motivo da retificação<span className="req">*</span>
@@ -263,9 +246,6 @@ function PaginaRetificacaoForm() {
                       </td>
                       <td className="num">
                         {formatarData(r.data_retificacao)}
-                      </td>
-                      <td>
-                        <span className="id-ref">#{r.medico_id}</span>
                       </td>
                       <td className="muted">{r.motivo_retificacao}</td>
                       <td>

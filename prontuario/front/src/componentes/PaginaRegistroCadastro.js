@@ -3,41 +3,18 @@ import { post, get } from "../servicos/api";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { labelTipo } from "../utils/tipoRegistroLabels";
-
-// G1 e G2 indisponíveis, pacientes e médicos simulados localmente
-const PACIENTES_MOCK = [
-  { id: 1, nome: "João Silva" },
-  { id: 2, nome: "Maria Oliveira" },
-  { id: 3, nome: "Carlos Souza" },
-  { id: 4, nome: "Ana Santos" },
-  { id: 5, nome: "Pedro Almeida" },
-  { id: 6, nome: "Fernanda Lima" },
-  { id: 7, nome: "Roberto Costa" },
-  { id: 8, nome: "Juliana Pereira" },
-  { id: 9, nome: "Marcos Rodrigues" },
-  { id: 10, nome: "Patrícia Ferreira" },
-];
-
-const MEDICOS_MOCK = [
-  { id: 1, nome: "Dr. Ricardo Mendes" },
-  { id: 2, nome: "Dra. Camila Torres" },
-  { id: 3, nome: "Dr. Felipe Andrade" },
-  { id: 4, nome: "Dra. Beatriz Nunes" },
-  { id: 5, nome: "Dr. Henrique Bastos" },
-];
+const url_g4 = process.env.REACT_APP_API_G4 + 'consultations?status=completed'//rota e filtro de para consultas realizadas 
+const token_g4 = process.env.REACT_APP_TOKEN_G4;
 
 function PaginaRegistroCadastro() {
   const navigate = useNavigate();
   const [tipos, setTipos] = useState([]);
   const [historico, setHistorico] = useState([]);
   const [carregando, setCarregando] = useState(false);
-  const [sugestoesPaciente, setSugestoesPaciente] = useState([]);
-  const [sugestoesMedico, setSugestoesMedico] = useState([]);
+  const [listConsultas, setListConsultas] = useState([])
 
   const [form, setForm] = useState({
-    paciente_id: "",
     consulta_id: "",
-    medico_id: "",
     tipo_registro_id: "",
     diagnostico: "",
     sintomas: "",
@@ -57,6 +34,12 @@ function PaginaRegistroCadastro() {
     };
     carregarTipos();
   }, []);
+
+  useEffect(() => {
+    if (listConsultas.length === 0) {
+      getListConsultas();
+    }
+  }, [])
 
   const carregarHistorico = async (id) => {
     if (!id) {
@@ -86,27 +69,6 @@ function PaginaRegistroCadastro() {
           : item.nome.toLowerCase().includes(termo),
       )
       .slice(0, 5);
-  };
-
-  const aoDigitarPaciente = (valor) => {
-    setForm((f) => ({ ...f, paciente_id: valor }));
-    setSugestoesPaciente(filtrarMock(PACIENTES_MOCK, valor));
-  };
-
-  const selecionarPaciente = (p) => {
-    setForm((f) => ({ ...f, paciente_id: String(p.id) }));
-    setSugestoesPaciente([]);
-    carregarHistorico(p.id);
-  };
-
-  const aoDigitarMedico = (valor) => {
-    setForm((f) => ({ ...f, medico_id: valor }));
-    setSugestoesMedico(filtrarMock(MEDICOS_MOCK, valor));
-  };
-
-  const selecionarMedico = (m) => {
-    setForm((f) => ({ ...f, medico_id: String(m.id) }));
-    setSugestoesMedico([]);
   };
 
   const dropdownStyle = {
@@ -153,16 +115,18 @@ function PaginaRegistroCadastro() {
   // Campos mostrados dependem do tipo de registro
   const mostrarDiagnostico =
     descricaoTipo === "EVOLUCAO_MEDICA" ||
+    descricaoTipo === "RETORNO" ||
     descricaoTipo === "EVOLUCAO_ENFERMAGEM";
   const mostrarSintomas =
+    descricaoTipo === "RETORNO" ||
     descricaoTipo === "EVOLUCAO_MEDICA" ||
     descricaoTipo === "EVOLUCAO_ENFERMAGEM" ||
     descricaoTipo === "ANAMNESE";
-  const mostrarObservacoes = descricaoTipo === "OBSERVACAO_ENFERMAGEM";
+  // const mostrarObservacoes = descricaoTipo === "OBSERVACAO";
 
   const salvar = async () => {
-    if (!form.paciente_id || !form.consulta_id || !form.medico_id) {
-      toast.warning("Preencha o ID do paciente, da consulta e do médico.");
+    if (!form.consulta_id) {
+      toast.warning("Selecione a consulta.");
       return;
     }
     if (!form.tipo_registro_id) {
@@ -177,21 +141,19 @@ function PaginaRegistroCadastro() {
       toast.warning("Preencha os sintomas.");
       return;
     }
-    if (mostrarObservacoes && !form.observacoes) {
-      toast.warning("Preencha a observação.");
-      return;
-    }
+    // if (!form.observacoes) {
+    //   toast.warning("Preencha a observação.");
+    //   return;
+    // }
 
     setCarregando(true);
     try {
       await post("registro-clinico", {
-        paciente_id: Number(form.paciente_id),
-        consulta_id: Number(form.consulta_id),
-        medico_id: Number(form.medico_id),
+        consulta_id: form.consulta_id,
         tipo_registro_id: Number(form.tipo_registro_id),
         diagnostico: mostrarDiagnostico ? form.diagnostico : "",
         sintomas: mostrarSintomas ? form.sintomas : "",
-        observacoes: mostrarObservacoes ? form.observacoes : "",
+        observacoes: form.observacoes,
       });
       toast.success("Registro clínico salvo com sucesso!");
       navigate("/busca");
@@ -201,6 +163,34 @@ function PaginaRegistroCadastro() {
     }
     setCarregando(false);
   };
+
+  async function getListConsultas() {
+
+    try {
+      const response = await fetch(url_g4, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `ApiKey ${token_g4}`
+        }
+      });
+
+      if (!response.ok) {
+        throw new Error(`Server responded with status: ${response.status}`);
+      }
+      const result = await response.json();
+      const selectOptions = result.data.map(item => ({
+        value: item.id,
+        label: `${item.doctorName} - ${item.specialty}`
+      }));
+      setListConsultas(selectOptions)
+      setForm((f) => ({ ...f, consulta_id: selectOptions[0].value }));
+    } catch (error) {
+      const msg = error.response?.data?.mensagem || error.message;
+      toast.error("Erro ao buscar consultas: " + msg);
+    }
+  }
+
 
   return (
     <section className="panel">
@@ -341,100 +331,23 @@ function PaginaRegistroCadastro() {
               >
                 <legend className="legend">Novo registro</legend>
                 <div className="form-grid">
-                  <div className="field" style={{ position: "relative" }}>
-                    <label className="field-label" htmlFor="paciente_id">
-                      Paciente (nome ou ID)<span className="req">*</span>
-                    </label>
-                    <input
-                      id="paciente_id"
-                      name="paciente_id"
-                      type="text"
-                      className="field-input"
-                      placeholder="Ex.: João Silva ou 1"
-                      autoComplete="off"
-                      value={form.paciente_id}
-                      onChange={(e) => aoDigitarPaciente(e.target.value)}
-                      onBlur={(e) => {
-                        const valor = e.target.value;
-                        setTimeout(() => setSugestoesPaciente([]), 150);
-                        carregarHistorico(valor);
-                      }}
-                    />
-                    {sugestoesPaciente.length > 0 && (
-                      <ul style={dropdownStyle}>
-                        {sugestoesPaciente.map((p) => (
-                          <li
-                            key={p.id}
-                            onClick={() => selecionarPaciente(p)}
-                            onMouseEnter={(e) =>
-                              (e.currentTarget.style.background =
-                                "var(--row-hover, #f1f5f9)")
-                            }
-                            onMouseLeave={(e) =>
-                              (e.currentTarget.style.background = "transparent")
-                            }
-                            style={dropdownItemStyle}
-                          >
-                            {p.nome} — ID: {p.id}
-                          </li>
-                        ))}
-                      </ul>
-                    )}
-                  </div>
-
                   <div className="field">
                     <label className="field-label" htmlFor="consulta_id">
-                      ID da Consulta<span className="req">*</span>
+                      Seleciole a Consulta<span className="req">*</span>
                     </label>
-                    <input
+                    <select
                       id="consulta_id"
                       name="consulta_id"
-                      type="number"
-                      min="1"
-                      className="field-input"
+                      className="field-select"
                       value={form.consulta_id}
                       onChange={handleChange}
-                    />
-                  </div>
-
-                  <div className="field" style={{ position: "relative" }}>
-                    <label className="field-label" htmlFor="medico_id">
-                      Médico Responsável (nome ou ID)
-                      <span className="req">*</span>
-                    </label>
-                    <input
-                      id="medico_id"
-                      name="medico_id"
-                      type="text"
-                      className="field-input"
-                      placeholder="Ex.: Dr. Ricardo Mendes ou 1"
-                      autoComplete="off"
-                      value={form.medico_id}
-                      onChange={(e) => aoDigitarMedico(e.target.value)}
-                      onBlur={() =>
-                        setTimeout(() => setSugestoesMedico([]), 150)
-                      }
-                    />
-                    {sugestoesMedico.length > 0 && (
-                      <ul style={dropdownStyle}>
-                        {sugestoesMedico.map((m) => (
-                          <li
-                            key={m.id}
-                            onClick={() => selecionarMedico(m)}
-                            onMouseEnter={(e) =>
-                              (e.currentTarget.style.background =
-                                "var(--row-hover, #f1f5f9)")
-                            }
-                            onMouseLeave={(e) =>
-                              (e.currentTarget.style.background = "transparent")
-                            }
-                            style={dropdownItemStyle}
-                          >
-                            {m.nome} — ID: {m.id}
-                          </li>
-                        ))}
-                      </ul>
-                    )}
+                    >
+                      {listConsultas.map((consulta) => (
+                        <option key={consulta.value} value={consulta.value}>
+                          {consulta.label}
+                        </option>
+                      ))}
+                    </select>
                   </div>
 
                   <div className="field">
@@ -488,22 +401,22 @@ function PaginaRegistroCadastro() {
                       />
                     </div>
                   )}
-                  {mostrarObservacoes && (
-                    <div className="field">
-                      <label className="field-label" htmlFor="observacoes">
-                        Observações<span className="req">*</span>
-                      </label>
-                      <textarea
-                        id="observacoes"
-                        name="observacoes"
-                        rows={2}
-                        className="field-textarea"
-                        value={form.observacoes}
-                        onChange={handleChange}
-                        placeholder="Descreva a observação…"
-                      />
-                    </div>
-                  )}
+
+                  <div className="field">
+                    <label className="field-label" htmlFor="observacoes">
+                      Observações<span className="req"></span>
+                    </label>
+                    <textarea
+                      id="observacoes"
+                      name="observacoes"
+                      rows={2}
+                      className="field-textarea"
+                      value={form.observacoes}
+                      onChange={handleChange}
+                      placeholder="Descreva a observação…"
+                    />
+                  </div>
+
                 </div>
               </fieldset>
             </div>

@@ -11,16 +11,14 @@ async function listarPorRegistro(req, res) {
       order: [["data_retificacao", "DESC"]],
     });
     return res.json(retificacoes);
-  } catch (erro) {
-    console.error("Erro em listarPorRegistro:", erro);
-    return res.status(500).json({ mensagem: erro.message });
+  } catch (error) {
+    return res.status(500).json({ mensagem: error.message });
   }
 }
 
 async function inserir(req, res) {
   const {
     registro_clinico_id,
-    medico_id,
     motivo_retificacao,
     conteudo_anterior,
     conteudo_novo,
@@ -43,7 +41,7 @@ async function inserir(req, res) {
 
     const retificacao = await RetificacaoRegistro.create({
       registro_clinico_id,
-      medico_id,
+      //medico_id,
       motivo_retificacao,
       conteudo_anterior,
       conteudo_novo,
@@ -55,9 +53,8 @@ async function inserir(req, res) {
     );
 
     return res.status(201).json(retificacao);
-  } catch (erro) {
-    console.error("Erro em inserir retificacao:", erro);
-    return res.status(500).json({ mensagem: erro.message });
+  } catch (error) {
+    return res.status(500).json({ mensagem: error.message });
   }
 }
 

@@ -2,7 +2,8 @@ export const TIPO_REGISTRO_LABELS = {
   EVOLUCAO_MEDICA: "Evolução Médica",
   EVOLUCAO_ENFERMAGEM: "Evolução de Enfermagem",
   ANAMNESE: "Anamnese",
-  OBSERVACAO_ENFERMAGEM: "Observação de Enfermagem",
+  OBSERVACAO: "Observação",
+  RETORNO: "Retorno Clínico",
 };
 
 export const labelTipo = (descricao) =>

@@ -30,7 +30,7 @@ function PaginaInicial() {
   useEffect(() => {
     get("tipo-registro")
       .then((dados) => setTipos(dados))
-      .catch(() => {});
+      .catch(() => { });
   }, []);
 
   const descricaoTipo = (id) =>
@@ -61,21 +61,21 @@ function PaginaInicial() {
     return new Date(data).toLocaleString("pt-BR");
   };
 
-  const aoDigitar = (valor) => {
-    setPacienteId(valor);
-    const termo = valor.trim().toLowerCase();
-    if (!termo) {
-      setSugestoes([]);
-      return;
-    }
-    const ehNumero = /^\d+$/.test(termo);
-    const filtrados = PACIENTES_MOCK.filter((p) =>
-      ehNumero
-        ? String(p.id).startsWith(termo)
-        : p.nome.toLowerCase().includes(termo),
-    ).slice(0, 5);
-    setSugestoes(filtrados);
-  };
+  // const aoDigitar = (valor) => {
+  //   setPacienteId(valor);
+  //   const termo = valor.trim().toLowerCase();
+  //   if (!termo) {
+  //     setSugestoes([]);
+  //     return;
+  //   }
+  //   const ehNumero = /^\d+$/.test(termo);
+  //   const filtrados = PACIENTES_MOCK.filter((p) =>
+  //     ehNumero
+  //       ? String(p.id).startsWith(termo)
+  //       : p.nome.toLowerCase().includes(termo),
+  //   ).slice(0, 5);
+  //   setSugestoes(filtrados);
+  // };
 
   const selecionarSugestao = (p) => {
     setPacienteId(String(p.id));
@@ -235,7 +235,6 @@ function PaginaInicial() {
                 <th>Reg.</th>
                 <th>Data/Hora</th>
                 <th>Tipo</th>
-                <th>Médico</th>
                 <th>Diagnóstico</th>
                 <th>Sintomas</th>
                 <th>Situação</th>
@@ -243,13 +242,12 @@ function PaginaInicial() {
             </thead>
             <tbody>
               ${resultado.registros
-                .map(
-                  (r) => `
+        .map(
+          (r) => `
                 <tr>
                   <td><span class="id-ref">#${r.id}</span></td>
                   <td>${new Date(r.data_registro).toLocaleString("pt-BR")}</td>
                   <td><span class="tag">${descricaoTipo(r.tipo_registro_id)}</span></td>
-                  <td><span class="id-ref">#${r.medico_id}</span></td>
                   <td>${r.diagnostico || "-"}</td>
                   <td>${r.sintomas || "-"}</td>
                   <td><span class="status ${r.retificado ? "status--ret" : "status--orig"}">
@@ -257,8 +255,8 @@ function PaginaInicial() {
                   </span></td>
                 </tr>
               `,
-                )
-                .join("")}
+        )
+        .join("")}
             </tbody>
           </table>
           <div class="rodape">
@@ -288,7 +286,7 @@ function PaginaInicial() {
           <div className="toolbar">
             <div className="field" style={{ position: "relative" }}>
               <label className="field-label" htmlFor="pacienteId">
-                Paciente (nome ou ID)
+                Paciente (ID)
               </label>
               <input
                 id="pacienteId"
@@ -297,7 +295,7 @@ function PaginaInicial() {
                 placeholder="Ex.: João Silva ou 1"
                 value={pacienteId}
                 autoComplete="off"
-                onChange={(e) => aoDigitar(e.target.value)}
+                onChange={(e) => setPacienteId(e.target.value)}
                 onKeyDown={(e) => e.key === "Enter" && buscar()}
                 onBlur={() => setTimeout(() => setSugestoes([]), 150)}
               />
@@ -325,8 +323,8 @@ function PaginaInicial() {
                       key={p.id}
                       onClick={() => selecionarSugestao(p)}
                       onMouseEnter={(e) =>
-                        (e.currentTarget.style.background =
-                          "var(--row-hover, #f1f5f9)")
+                      (e.currentTarget.style.background =
+                        "var(--row-hover, #f1f5f9)")
                       }
                       onMouseLeave={(e) =>
                         (e.currentTarget.style.background = "transparent")
@@ -429,7 +427,6 @@ function PaginaInicial() {
                     <th style={{ width: 70 }}>Reg.</th>
                     <th style={{ width: 160 }}>Data/hora</th>
                     <th style={{ width: 200 }}>Tipo</th>
-                    <th style={{ width: 80 }}>Médico</th>
                     <th>Diagnóstico</th>
                     <th>Sintomas</th>
                     <th style={{ width: 110 }}>Situação</th>
@@ -448,9 +445,9 @@ function PaginaInicial() {
                           {descricaoTipo(r.tipo_registro_id)}
                         </span>
                       </td>
-                      <td>
+                      {/* <td>
                         <span className="id-ref">#{r.medico_id}</span>
-                      </td>
+                      </td> */}
                       <td>
                         <span className="clip">{r.diagnostico || "-"}</span>
                       </td>
@@ -523,9 +520,6 @@ function PaginaInicial() {
                 <p>
                   <strong>Data/Hora:</strong>{" "}
                   {formatarData(registroModal.data_registro)}
-                </p>
-                <p>
-                  <strong>Médico:</strong> #{registroModal.medico_id}
                 </p>
                 {registroModal.diagnostico && (
                   <p>

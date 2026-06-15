@@ -17,20 +17,19 @@ const api = Express();
 api.use(Express.json());
 api.use(cors());
 
-api.get("/teste", (req, res) => {
+api.get("/", (req, res) => {
   res.send("G5 - API Prontuário funcionando");
 });
-
+//listar tipos de registro
 api.get("/tipo-registro", tipoRegistro.listar);
-
+//rotas prontuario
 api.get("/prontuario/paciente/:paciente_id", prontuario.buscarPorPaciente);
 api.get("/prontuario/:id", prontuario.buscarPorId);
-
+//rotas registros clinicos
 api.get("/registro-clinico", registroClinico.listar);
 api.get("/registro-clinico/:id", registroClinico.selecionar);
 api.post("/registro-clinico", registroClinico.inserir);
-// Sem PUT/DELETE, registros são imutáveis, correção via POST /retificacao
-
+//rotas retificacao de registros
 api.get(
   "/retificacao/registro/:registro_clinico_id",
   retificacao.listarPorRegistro,
