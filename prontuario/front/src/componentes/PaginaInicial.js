@@ -521,6 +521,37 @@ function PaginaInicial() {
                   <strong>Situação:</strong>{" "}
                   {registroModal.retificado ? "Retificado" : "Original"}
                 </p>
+                {registroModal.retificado && (
+                  <div
+                    style={{
+                      marginTop: "16px",
+                      paddingTop: "16px",
+                      borderTop: "1px solid var(--line)",
+                    }}
+                  >
+                    <h6 style={{ marginBottom: "12px" }}>
+                      Dados da retificação
+                    </h6>
+                    {registroModal.conteudo_novo && (
+                      <p>
+                        <strong>Conteúdo novo:</strong>{" "}
+                        {registroModal.conteudo_novo}
+                      </p>
+                    )}
+                    {registroModal.motivo_retificacao && (
+                      <p>
+                        <strong>Motivo da retificação:</strong>{" "}
+                        {registroModal.motivo_retificacao}
+                      </p>
+                    )}
+                    {registroModal.data_retificacao && (
+                      <p>
+                        <strong>Data da retificação:</strong>{" "}
+                        {registroModal.data_retificacao}
+                      </p>
+                    )}
+                  </div>
+                )}
               </div>
               <div className="modal-footer">
                 <button
