@@ -80,24 +80,26 @@ insert into tipo_registro (descricao) values
 -- Usada pela consulta de historico do paciente
 -- ============================================================
 create or replace view vw_historico_clinico as
-select
-  rc.id              as registro_id,
-  p.paciente_id,
-  p.id               as prontuario_id,
-  rc.consulta_id,
-  rc.medico_id,
-  tr.descricao       as tipo_registro,
-  rc.diagnostico,
-  rc.sintomas,
-  rc.observacoes,
-  rc.data_registro,
-  rc.retificado,
-  p.data_criacao     as prontuario_criado_em
-from registro_clinico rc
-  inner join prontuario    p  on rc.prontuario_id    = p.id
-  inner join tipo_registro tr on rc.tipo_registro_id = tr.id
-order by rc.data_registro desc;
-
+        select 	rc.id,
+        p.id as prontuario_id,
+        rc.consulta_id,
+        rc.tipo_registro_id,
+        tr.descricao tipo_registro,
+        p.paciente_id,
+        rc.diagnostico,
+        rc.sintomas,
+        rc.observacoes,
+        TO_CHAR(rc.data_registro, 'DD/MM/YYYY HH24:MI:SS') data_registro,
+        rc.retificado,
+        rr.motivo_retificacao,
+        rr.conteudo_novo,
+        TO_CHAR(rr.data_retificacao, 'DD/MM/YYYY HH24:MI:SS') data_retificacao,
+        TO_CHAR(p.data_criacao, 'DD/MM/YYYY HH24:MI:SS') prontuario_criado_em
+        from registro_clinico rc
+          join prontuario    p  on rc.prontuario_id = p.id
+          join tipo_registro tr on rc.tipo_registro_id = tr.id
+          left join retificacao_registro rr on rr.registro_clinico_id = rc.id
+        order by rc.data_registro desc
 -- ============================================================
 -- STORED PROCEDURE: sp_registrar_evolucao_clinica  (RF01)
 -- Cria o prontuario caso nao exista e insere o registro clinico

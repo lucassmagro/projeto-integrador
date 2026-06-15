@@ -21,7 +21,7 @@ function PaginaRetificacaoForm() {
       try {
         const reg = await get(`registro-clinico/${registro_id}`);
         setRegistro(reg);
-        setForm((f) => ({ ...f, conteudo_anterior: reg.diagnostico + reg.sintomas }));
+        setForm((f) => ({ ...f, conteudo_anterior: `${reg.diagnostico ? 'diagnóstico: ' + reg.diagnostico : ''} ${reg.sintomas ? 'sintomas: ' +reg.sintomas : ''} ${reg.observacao ? 'obs: ' + reg.observacao :''}` }));
 
         const rets = await get(`retificacao/registro/${registro_id}`);
         setRetificacoes(rets);
@@ -107,12 +107,8 @@ function PaginaRetificacaoForm() {
                 <div className="cb-meta-item">
                   <span className="cb-meta-label">Data Original</span>
                   <span className="cb-meta-value">
-                    {formatarData(registro.data_registro)}
+                    {registro.data_registro}
                   </span>
-                </div>
-                <div className="cb-meta-item">
-                  <span className="cb-meta-label">Médico</span>
-                  {/* <span className="cb-meta-value">#{registro.medico_id}</span> */}
                 </div>
               </div>
             </div>

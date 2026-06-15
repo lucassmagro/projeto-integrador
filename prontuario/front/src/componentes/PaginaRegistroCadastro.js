@@ -235,7 +235,7 @@ function PaginaRegistroCadastro() {
               </div>
             </div>
           </div>
-          <div className="cb-meta">
+          {/* <div className="cb-meta">
             <div className="cb-meta-item">
               <span className="cb-meta-label">Médico Responsável</span>
               <span className="cb-meta-value">
@@ -246,7 +246,7 @@ function PaginaRegistroCadastro() {
                 )}
               </span>
             </div>
-          </div>
+          </div> */}
         </div>
 
         <div style={{ padding: "24px" }}>
@@ -277,7 +277,7 @@ function PaginaRegistroCadastro() {
                     {historico.map((r) => (
                       <div className="timeline-card" key={r.id}>
                         <span className="timeline-date">
-                          {formatarData(r.data_registro)}
+                          {r.data_registro}
                         </span>
                         <span className="tag timeline-type">
                           {descricaoPorId(r.tipo_registro_id)}

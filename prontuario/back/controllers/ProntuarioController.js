@@ -17,22 +17,8 @@ async function buscarPorPaciente(req, res) {
     }
 
     const registros_clinicos = await banco.query(
-      `select rc.id,
-        p.id as prontuario_id,
-        rc.consulta_id,
-        rc.tipo_registro_id,
-        p.paciente_id,
-        rc.diagnostico,
-        rc.sintomas,
-        rc.observacoes,
-        rc.data_registro,
-        rc.retificado,
-        p.data_criacao as prontuario_criado_em
-        from registro_clinico rc
-          inner join prontuario    p  on rc.prontuario_id = p.id
-          inner join tipo_registro tr on rc.tipo_registro_id = tr.id
-          where p.paciente_id = :paciente_id
-          order by rc.data_registro desc`,
+      `SELECT * FROM sistema.vw_historico_clinico
+       WHERE paciente_id = :paciente_id`,
       {
         replacements: { paciente_id: paciente_id },
         type: QueryTypes.SELECT // Formats output as an array of rows

@@ -61,22 +61,6 @@ function PaginaInicial() {
     return new Date(data).toLocaleString("pt-BR");
   };
 
-  // const aoDigitar = (valor) => {
-  //   setPacienteId(valor);
-  //   const termo = valor.trim().toLowerCase();
-  //   if (!termo) {
-  //     setSugestoes([]);
-  //     return;
-  //   }
-  //   const ehNumero = /^\d+$/.test(termo);
-  //   const filtrados = PACIENTES_MOCK.filter((p) =>
-  //     ehNumero
-  //       ? String(p.id).startsWith(termo)
-  //       : p.nome.toLowerCase().includes(termo),
-  //   ).slice(0, 5);
-  //   setSugestoes(filtrados);
-  // };
-
   const selecionarSugestao = (p) => {
     setPacienteId(String(p.id));
     setSugestoes([]);
@@ -246,7 +230,7 @@ function PaginaInicial() {
           (r) => `
                 <tr>
                   <td><span class="id-ref">#${r.id}</span></td>
-                  <td>${new Date(r.data_registro).toLocaleString("pt-BR")}</td>
+                  <td>${new Date(r.data_registro)}</td>
                   <td><span class="tag">${descricaoTipo(r.tipo_registro_id)}</span></td>
                   <td>${r.diagnostico || "-"}</td>
                   <td>${r.sintomas || "-"}</td>
@@ -439,15 +423,12 @@ function PaginaInicial() {
                       <td>
                         <span className="id-ref">#{r.id}</span>
                       </td>
-                      <td className="num">{formatarData(r.data_registro)}</td>
+                      <td className="num">{r.data_registro}</td>
                       <td>
                         <span className="tag">
                           {descricaoTipo(r.tipo_registro_id)}
                         </span>
                       </td>
-                      {/* <td>
-                        <span className="id-ref">#{r.medico_id}</span>
-                      </td> */}
                       <td>
                         <span className="clip">{r.diagnostico || "-"}</span>
                       </td>
@@ -519,7 +500,7 @@ function PaginaInicial() {
                 </p>
                 <p>
                   <strong>Data/Hora:</strong>{" "}
-                  {formatarData(registroModal.data_registro)}
+                  {registroModal.data_registro}
                 </p>
                 {registroModal.diagnostico && (
                   <p>
