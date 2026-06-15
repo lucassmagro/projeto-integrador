@@ -1,9 +1,13 @@
 import { Sequelize } from "sequelize";
+import dotenv from 'dotenv';
+dotenv.config({
+    path: './.env',
+});
 
-const banco = new Sequelize("prontuario", "postgres", "02041329", {
-  host: "localhost",
-  port: 5432,
-  dialect: "postgres",
+const banco = new Sequelize(process.env.DB_NAME ?? "prontuario", process.env.DB_USER ?? "postgres", process.env.DB_PASS ?? "postgres", {
+  host: process.env.DB_HOST ?? "localhost",
+  port: process.env.DB_PORT ?? 5432,
+  dialect: process.env.DB_DIALECT ?? "postgres",
   define: {
     schema: "sistema",
     timestamps: false,
@@ -16,5 +20,7 @@ const banco = new Sequelize("prontuario", "postgres", "02041329", {
     },
   },
 });
+
+
 
 export default banco;

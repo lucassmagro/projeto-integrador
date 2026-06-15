@@ -41,7 +41,7 @@ function PaginaRegistroCadastro() {
     }
   }, [])
 
-  const carregarHistorico = async (id) => {
+  async function carregarHistorico(id) {
     if (!id) {
       setHistorico([]);
       return;
@@ -141,10 +141,6 @@ function PaginaRegistroCadastro() {
       toast.warning("Preencha os sintomas.");
       return;
     }
-    // if (!form.observacoes) {
-    //   toast.warning("Preencha a observação.");
-    //   return;
-    // }
 
     setCarregando(true);
     try {
@@ -165,7 +161,6 @@ function PaginaRegistroCadastro() {
   };
 
   async function getListConsultas() {
-
     try {
       const response = await fetch(url_g4, {
         method: 'GET',
@@ -178,13 +173,19 @@ function PaginaRegistroCadastro() {
       if (!response.ok) {
         throw new Error(`Server responded with status: ${response.status}`);
       }
+
       const result = await response.json();
+      let paciente_id = result.data.map(item =>item.patientId ) ;
       const selectOptions = result.data.map(item => ({
         value: item.id,
         label: `${item.doctorName} - ${item.specialty}`
       }));
+
       setListConsultas(selectOptions)
+
       setForm((f) => ({ ...f, consulta_id: selectOptions[0].value }));
+
+      carregarHistorico(paciente_id[0])
     } catch (error) {
       const msg = error.response?.data?.mensagem || error.message;
       toast.error("Erro ao buscar consultas: " + msg);
